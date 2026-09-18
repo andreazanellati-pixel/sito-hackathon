@@ -1,0 +1,12 @@
+# --- Cartella di lavoro della scuola: NON va nel sito pubblico ---
+# Contiene documenti, elenchi alunni, voti, PEI, foto.
+# Resta solo sul computer: git la ignora completamente.
+IIS_PrimoLevi/
+
+# --- File tecnici creati da Windows o dagli editor ---
+Thumbs.db
+desktop.ini
+.DS_Store
+*.tmp
+*.bak
+~$*
