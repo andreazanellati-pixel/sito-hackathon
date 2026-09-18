@@ -1,0 +1,66 @@
+# ============================================================
+#  CARTE DEL GIOCO DI FLASHCARD
+#  Materia: Scienze - classe quinta liceo
+# ============================================================
+#
+# COME AGGIUNGERE UNA CARTA
+# Scrivi una carta per riga, con questo formato:
+#
+#     domanda | risposta | categoria
+#
+# Le tre parti vanno separate dalla barra verticale  |
+# (sulla tastiera italiana: AltGr + il tasto \ , vicino a invio).
+#
+# REGOLE
+# - Una riga = una carta. Non andare a capo dentro una carta.
+# - Servono esattamente tre parti: se ne manca una la carta viene saltata.
+# - Le righe che iniziano con il cancelletto (#) sono note come questa
+#   e non compaiono nel gioco.
+# - Le righe vuote vengono ignorate: usale pure per separare i gruppi.
+# - La categoria serve per il filtro a inizio partita. Scrivila sempre
+#   allo stesso modo (attenzione a maiuscole e accenti), altrimenti il
+#   gioco la considera una categoria diversa.
+# - Non usare il simbolo | dentro alla domanda o alla risposta.
+#
+# ESEMPIO
+# Di che colore e' il cielo? | Azzurro | Esempio
+#
+# Se sbagli a scrivere una riga il gioco non si blocca: la salta e ti
+# avvisa indicando il numero della riga da correggere.
+# ============================================================
+
+
+# ---------- IDROCARBURI ----------
+
+Qual è la formula generale degli alcani? | CnH2n+2: sono idrocarburi saturi, con soli legami semplici carbonio-carbonio. | Idrocarburi
+Che differenza c'è tra un idrocarburo saturo e uno insaturo? | Il saturo ha solo legami semplici; l'insaturo ha almeno un doppio o un triplo legame carbonio-carbonio. | Idrocarburi
+Qual è l'ibridazione del carbonio in un alchino? | Ibridazione sp: i due carboni del triplo legame e i loro sostituenti formano una geometria lineare (180°). | Idrocarburi
+Perché il benzene non dà reazioni di addizione come gli alcheni? | Perché è aromatico: i sei elettroni pi greco sono delocalizzati su tutto l'anello e questo lo rende molto stabile. | Idrocarburi
+
+# ---------- GRUPPI FUNZIONALI ----------
+
+Quale gruppo funzionale caratterizza gli alcoli? | Il gruppo ossidrile -OH legato a un atomo di carbonio. | Gruppi funzionali
+Che differenza c'è tra un'aldeide e un chetone? | Hanno entrambi il gruppo carbonile C=O: nell'aldeide sta a un'estremità della catena (porta un idrogeno), nel chetone sta in mezzo, fra due atomi di carbonio. | Gruppi funzionali
+Da quali parti è formato il gruppo carbossilico? | Dal gruppo carbonile C=O unito a un ossidrile -OH, cioè -COOH: è il gruppo che rende acide queste molecole. | Gruppi funzionali
+Come si riconosce un estere dalla formula? | Dal gruppo -COO- inserito tra due catene carboniose: deriva da un acido carbossilico e un alcol. | Gruppi funzionali
+
+# ---------- ISOMERIA ----------
+
+Che cosa sono gli isomeri di struttura? | Molecole con la stessa formula molecolare ma diverso ordine di legame fra gli atomi, quindi proprietà diverse. | Isomeria
+Quando un atomo di carbonio si dice chirale? | Quando è legato a quattro gruppi tutti diversi fra loro: la molecola e la sua immagine allo specchio non sono sovrapponibili. | Isomeria
+Che differenza c'è tra enantiomeri e diastereoisomeri? | Gli enantiomeri sono immagini speculari non sovrapponibili; i diastereoisomeri sono stereoisomeri che non sono immagini speculari. | Isomeria
+Quando è possibile l'isomeria cis-trans? | Quando c'è un doppio legame (o un anello) che impedisce la rotazione e ciascun carbonio coinvolto porta due sostituenti diversi. | Isomeria
+
+# ---------- REAZIONI ----------
+
+Qual è la reazione tipica degli alcani? | La sostituzione radicalica, per esempio l'alogenazione alla luce ultravioletta: un idrogeno viene sostituito da un alogeno. | Reazioni
+Qual è la reazione tipica degli alcheni? | L'addizione elettrofila: il doppio legame si apre e i due nuovi gruppi si legano ai carboni. | Reazioni
+Che cosa dice la regola di Markovnikov? | Nell'addizione di un acido a un alchene asimmetrico, l'idrogeno si lega al carbonio che ha già più idrogeni. | Reazioni
+Che cosa si ottiene ossidando un alcol primario? | Prima un'aldeide e, se l'ossidazione continua, un acido carbossilico. | Reazioni
+
+# ---------- NOMENCLATURA ----------
+
+Quale suffisso IUPAC indica un alcol? | Il suffisso -olo, per esempio etanolo. | Nomenclatura
+Come si chiamano nella nomenclatura IUPAC gli acidi carbossilici? | Con la parola acido seguita dal nome della catena con suffisso -oico, per esempio acido etanoico. | Nomenclatura
+Qual è il nome IUPAC di CH3-CH2-CH2-OH? | Propan-1-olo: tre atomi di carbonio e l'ossidrile sul primo. | Nomenclatura
+Che cosa indica il numero nel nome 2-metilpentano? | La posizione del sostituente sulla catena principale: il gruppo metile si trova sul secondo atomo di carbonio. | Nomenclatura
