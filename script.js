@@ -1,19 +1,27 @@
 // Legge il testo da contenuti/home.txt e lo mostra nella pagina.
 // Cosi' i contenuti restano separati dal codice.
+//
+// Regola: le righe vuote separano i blocchi.
+// Primo blocco = titolo, secondo = sottotitolo, gli altri = paragrafi.
 
 fetch("contenuti/home.txt")
   .then(function (risposta) {
     return risposta.text();
   })
   .then(function (testo) {
-    // Tolgo le righe di nota (#) e le righe vuote.
-    var righe = testo
+    var blocchi = testo
       .split("\n")
-      .map(function (riga) { return riga.trim(); })
-      .filter(function (riga) { return riga !== "" && riga.charAt(0) !== "#"; });
+      // Tolgo le righe di nota, che iniziano con il cancelletto.
+      .filter(function (riga) { return riga.trim().charAt(0) !== "#"; })
+      .join("\n")
+      // Una o piu' righe vuote separano un blocco dall'altro.
+      .split(/\n\s*\n/)
+      // Dentro un blocco gli "a capo" diventano spazi: il testo resta unito.
+      .map(function (blocco) { return blocco.replace(/\s+/g, " ").trim(); })
+      .filter(function (blocco) { return blocco !== ""; });
 
-    var titolo = righe.shift() || "Sito";
-    var sottotitolo = righe.shift() || "";
+    var titolo = blocchi.shift() || "Sito";
+    var sottotitolo = blocchi.shift() || "";
 
     document.title = titolo;
     document.getElementById("titolo").textContent = titolo;
@@ -21,9 +29,9 @@ fetch("contenuti/home.txt")
 
     var contenuto = document.getElementById("contenuto");
     contenuto.innerHTML = "";
-    righe.forEach(function (riga) {
+    blocchi.forEach(function (blocco) {
       var p = document.createElement("p");
-      p.textContent = riga;
+      p.textContent = blocco;
       contenuto.appendChild(p);
     });
   })

@@ -1,10 +1,11 @@
 # ISTRUZIONI PER CHI MODIFICA QUESTO FILE
 # - Le righe che iniziano con il cancelletto (#) sono note: non appaiono nel sito.
-# - La prima riga normale qui sotto e' il TITOLO della pagina.
-# - La seconda riga normale e' il sottotitolo.
-# - Tutto il resto diventa un paragrafo di testo, uno per riga.
-# - Lascia pure righe vuote dove vuoi: vengono ignorate.
-# - Salva il file e il sito si aggiorna (dopo il push su GitHub).
+# - I blocchi di testo si separano lasciando una RIGA VUOTA in mezzo.
+# - Il primo blocco e' il TITOLO della pagina.
+# - Il secondo blocco e' il sottotitolo.
+# - Ogni blocco successivo diventa un paragrafo.
+# - Dentro un blocco puoi andare a capo quanto vuoi: il testo resta unito.
+# - Salva il file, poi fai fare il push a Claude: il sito si aggiorna in un minuto.
 
 Sito dell'hackathon
 
