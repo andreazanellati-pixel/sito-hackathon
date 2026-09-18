@@ -1,0 +1,17 @@
+# ISTRUZIONI PER CHI MODIFICA QUESTO FILE
+# - Le righe che iniziano con il cancelletto (#) sono note: non appaiono nel sito.
+# - La prima riga normale qui sotto e' il TITOLO della pagina.
+# - La seconda riga normale e' il sottotitolo.
+# - Tutto il resto diventa un paragrafo di testo, uno per riga.
+# - Lascia pure righe vuote dove vuoi: vengono ignorate.
+# - Salva il file e il sito si aggiorna (dopo il push su GitHub).
+
+Sito dell'hackathon
+
+Un piccolo sito costruito passo passo
+
+Questa e' la pagina iniziale. Per ora c'e' poco: serve a verificare che la
+pubblicazione su GitHub Pages funzioni.
+
+Per cambiare queste parole non serve saper programmare: basta aprire il file
+contenuti/home.txt e riscrivere il testo.
