@@ -1,0 +1,344 @@
+/* ================================================================
+   Aspetto grafico del gioco di flashcard.
+   Colori e dimensioni si cambiano qui sotto, nella parte :root.
+   ================================================================ */
+
+:root {
+  --sfondo: #101b2d;
+  --sfondo-chiaro: #1b2a44;
+  --carta: #fdfcf9;
+  --carta-dietro: #eef6f1;
+  --testo: #16202e;
+  --testo-chiaro: #e8eefb;
+  --accento: #5bc0be;
+  --giusta: #2f9e6b;
+  --sbagliata: #c9603f;
+  --ombra: 0 1.2rem 2.5rem rgba(0, 0, 0, 0.35);
+  --raggio: 1.1rem;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 1.5rem 1rem 3rem;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 15% 0%, #25406b 0%, transparent 55%),
+    linear-gradient(160deg, var(--sfondo) 0%, #0a1220 100%);
+  background-color: var(--sfondo);
+  color: var(--testo-chiaro);
+  font-family: "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+  line-height: 1.6;
+}
+
+main { max-width: 34rem; margin: 0 auto; }
+
+/* ---------------- testata ---------------- */
+
+.testata {
+  max-width: 34rem;
+  margin: 0 auto 1.75rem;
+  text-align: center;
+}
+
+.ritorno {
+  display: inline-block;
+  margin-bottom: 1rem;
+  color: var(--accento);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.ritorno:hover, .ritorno:focus { text-decoration: underline; }
+
+h1 {
+  margin: 0;
+  font-size: 1.6rem;
+  letter-spacing: -0.01em;
+}
+
+.materia {
+  margin: 0.25rem 0 0;
+  opacity: 0.6;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* ---------------- riquadri ---------------- */
+
+.riquadro {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--raggio);
+  padding: 1.75rem 1.5rem;
+  text-align: center;
+}
+
+.nascosto { display: none; }
+
+.stato { margin: 0; opacity: 0.7; }
+
+.etichetta {
+  display: block;
+  margin-bottom: 0.6rem;
+  font-weight: 600;
+}
+
+select {
+  width: 100%;
+  padding: 0.8rem 0.9rem;
+  font: inherit;
+  font-size: 1rem;
+  color: var(--testo);
+  background: var(--carta);
+  border: none;
+  border-radius: 0.6rem;
+}
+
+.conteggio { margin: 1rem 0 1.25rem; opacity: 0.75; }
+
+.nota {
+  margin: 1.25rem 0 0;
+  font-size: 0.88rem;
+  opacity: 0.6;
+  line-height: 1.5;
+}
+
+/* ---------------- bottoni ---------------- */
+
+.bottone {
+  display: inline-block;
+  padding: 0.85rem 1.4rem;
+  min-height: 3rem;           /* comodo da toccare col dito */
+  font: inherit;
+  font-weight: 600;
+  color: var(--testo-chiaro);
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.7rem;
+  cursor: pointer;
+  transition: transform 0.12s ease, filter 0.12s ease;
+}
+
+.bottone:hover { filter: brightness(1.12); }
+.bottone:active { transform: scale(0.97); }
+
+.bottone.principale {
+  width: 100%;
+  color: #06202a;
+  background: var(--accento);
+  border-color: transparent;
+}
+
+.bottone.giusta { background: var(--giusta); border-color: transparent; }
+.bottone.sbagliata { background: var(--sbagliata); border-color: transparent; }
+
+.bottoni {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.bottoni .bottone { flex: 1; }
+
+.invisibile { visibility: hidden; }
+
+.collegamento {
+  display: block;
+  margin: 1.5rem auto 0;
+  padding: 0.5rem;
+  font: inherit;
+  font-size: 0.85rem;
+  color: var(--testo-chiaro);
+  background: none;
+  border: none;
+  opacity: 0.55;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/* ---------------- avanzamento ---------------- */
+
+.avanzamento { margin-bottom: 1.1rem; }
+
+.barra {
+  height: 0.4rem;
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+#barra-piena {
+  height: 100%;
+  width: 0%;
+  background: var(--accento);
+  border-radius: 1rem;
+  transition: width 0.35s ease;
+}
+
+.numeri {
+  margin: 0.55rem 0 0;
+  font-size: 0.85rem;
+  opacity: 0.65;
+  text-align: center;
+}
+
+/* ---------------- la carta che si gira ---------------- */
+
+.carta {
+  perspective: 1200px;        /* dà profondità alla rotazione */
+  width: 100%;
+  min-height: 19rem;
+  cursor: pointer;
+  outline: none;
+}
+
+.carta .interno {
+  position: relative;
+  width: 100%;
+  min-height: 19rem;
+  transition: transform 0.55s cubic-bezier(0.4, 0.15, 0.2, 1);
+  transform-style: preserve-3d;
+}
+
+.carta.girata .interno { transform: rotateY(180deg); }
+
+.carta:focus-visible .interno { box-shadow: 0 0 0 3px var(--accento); border-radius: var(--raggio); }
+
+.faccia {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.75rem 1.5rem;
+  background: var(--carta);
+  color: var(--testo);
+  border-radius: var(--raggio);
+  box-shadow: var(--ombra);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;   /* serve su Safari e iPhone */
+  overflow-y: auto;
+}
+
+.faccia.dietro {
+  background: var(--carta-dietro);
+  transform: rotateY(180deg);
+}
+
+.categoria {
+  margin: 0 0 1rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #6b7d92;
+}
+
+.testo {
+  margin: 0;
+  font-size: 1.22rem;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.faccia.dietro .testo { font-size: 1.05rem; line-height: 1.55; }
+
+.suggerimento {
+  position: absolute;
+  bottom: 1rem;
+  left: 0;
+  right: 0;
+  margin: 0;
+  font-size: 0.78rem;
+  color: #91a1b4;
+}
+
+.scorciatoie {
+  margin: 1.1rem 0 0;
+  font-size: 0.78rem;
+  text-align: center;
+  opacity: 0.45;
+}
+
+kbd {
+  padding: 0.05rem 0.35rem;
+  font-family: inherit;
+  font-size: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 0.25rem;
+}
+
+/* sul telefono le scorciatoie da tastiera non servono */
+@media (hover: none) and (pointer: coarse) {
+  .scorciatoie { display: none; }
+}
+
+/* ---------------- schermata finale ---------------- */
+
+.punteggio {
+  margin: 1rem 0 0.25rem;
+  font-size: 4rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--accento);
+}
+
+.percento { font-size: 1.75rem; opacity: 0.6; }
+
+.frase { margin: 0 0 1.25rem; font-size: 1.05rem; }
+
+.dettaglio { margin: 0; opacity: 0.75; font-size: 0.95rem; }
+
+#blocco-ripassare { margin-top: 1.75rem; text-align: left; }
+
+#blocco-ripassare h3 {
+  margin: 0 0 0.6rem;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  opacity: 0.6;
+}
+
+#elenco-ripassare {
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 0.92rem;
+  opacity: 0.85;
+}
+
+#elenco-ripassare li { margin-bottom: 0.45rem; }
+
+/* ---------------- avviso righe sbagliate ---------------- */
+
+.avviso {
+  max-width: 34rem;
+  margin: 1.5rem auto 0;
+  padding: 1.1rem 1.25rem;
+  background: rgba(201, 96, 63, 0.14);
+  border: 1px solid rgba(201, 96, 63, 0.5);
+  border-radius: 0.8rem;
+  font-size: 0.9rem;
+}
+
+.avviso h2 { margin: 0 0 0.6rem; font-size: 0.95rem; }
+.avviso ul { margin: 0; padding-left: 1.2rem; }
+.avviso li { margin-bottom: 0.3rem; }
+.avviso code { background: rgba(0, 0, 0, 0.3); padding: 0 0.25rem; border-radius: 0.2rem; }
+
+/* ---------------- schermi larghi ---------------- */
+
+@media (min-width: 40rem) {
+  body { padding-top: 3rem; }
+  h1 { font-size: 2rem; }
+  .testo { font-size: 1.35rem; }
+}
+
+/* chi ha chiesto meno animazioni al sistema non vede la rotazione */
+@media (prefers-reduced-motion: reduce) {
+  .carta .interno { transition: none; }
+  #barra-piena { transition: none; }
+}

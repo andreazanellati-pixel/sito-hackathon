@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Flashcard di chimica organica</title>
+  <link rel="stylesheet" href="flashcard.css">
+</head>
+<body>
+
+<header class="testata">
+  <a class="ritorno" href="index.html">&#8592; Torna alla pagina iniziale</a>
+  <h1>Flashcard di chimica organica</h1>
+  <p class="materia">Scienze &middot; classe quinta</p>
+</header>
+
+<main>
+
+  <!-- ============ SCHERMATA 1: scelta della categoria ============ -->
+  <section id="schermata-avvio" class="riquadro">
+    <p id="stato-caricamento" class="stato">Carico le carte&hellip;</p>
+
+    <div id="blocco-avvio" class="nascosto">
+      <label class="etichetta" for="filtro-categoria">Che cosa vuoi ripassare?</label>
+      <select id="filtro-categoria"></select>
+
+      <p class="conteggio"><span id="numero-carte">0</span> carte in questo ripasso</p>
+
+      <button id="bottone-inizia" class="bottone principale" type="button">Inizia il ripasso</button>
+
+      <p class="nota">
+        Le carte che sbagli tornano pi&ugrave; spesso: il ripasso finisce
+        quando le hai indovinate tutte.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ SCHERMATA 2: il gioco ============ -->
+  <section id="schermata-gioco" class="nascosto">
+
+    <div class="avanzamento">
+      <div class="barra"><div id="barra-piena"></div></div>
+      <p class="numeri">
+        <span id="carte-rimaste">0</span> da indovinare &middot;
+        <span id="carte-fatte">0</span> gi&agrave; sapute
+      </p>
+    </div>
+
+    <div id="carta" class="carta" role="button" tabindex="0"
+         aria-label="Carta: premi per girarla e vedere la risposta">
+      <div class="interno">
+        <div class="faccia davanti">
+          <p class="categoria" id="categoria-carta"></p>
+          <p class="testo" id="testo-domanda"></p>
+          <p class="suggerimento">Tocca la carta per vedere la risposta</p>
+        </div>
+        <div class="faccia dietro">
+          <p class="categoria">Risposta</p>
+          <p class="testo" id="testo-risposta"></p>
+        </div>
+      </div>
+    </div>
+
+    <div id="bottoni-risposta" class="bottoni invisibile">
+      <button id="bottone-sbagliata" class="bottone sbagliata" type="button">Non la sapevo</button>
+      <button id="bottone-giusta" class="bottone giusta" type="button">La sapevo</button>
+    </div>
+
+    <p class="scorciatoie">
+      Da computer: <kbd>spazio</kbd> gira la carta,
+      <kbd>&#8592;</kbd> non la sapevo, <kbd>&#8594;</kbd> la sapevo.
+    </p>
+
+    <button id="bottone-abbandona" class="collegamento" type="button">Interrompi il ripasso</button>
+  </section>
+
+  <!-- ============ SCHERMATA 3: risultato ============ -->
+  <section id="schermata-fine" class="riquadro nascosto">
+    <h2>Ripasso finito</h2>
+
+    <p class="punteggio"><span id="punteggio-numero">0</span><span class="percento">%</span></p>
+    <p id="punteggio-frase" class="frase"></p>
+
+    <p class="dettaglio">
+      Indovinate al primo colpo: <strong id="dettaglio-primo">0</strong> su
+      <strong id="dettaglio-totale">0</strong>.
+    </p>
+
+    <div id="blocco-ripassare" class="nascosto">
+      <h3>Da rivedere</h3>
+      <ul id="elenco-ripassare"></ul>
+    </div>
+
+    <div class="bottoni">
+      <button id="bottone-ripeti-sbagliate" class="bottone principale nascosto" type="button">Riprova solo queste</button>
+      <button id="bottone-ricomincia" class="bottone" type="button">Torna alla scelta</button>
+    </div>
+  </section>
+
+  <!-- ============ avviso righe scritte male ============ -->
+  <section id="avviso-righe" class="avviso nascosto">
+    <h2>Attenzione: alcune righe di carte.txt sono state saltate</h2>
+    <ul id="elenco-righe-saltate"></ul>
+    <p class="nota">
+      Il gioco funziona lo stesso con le altre carte. Per sistemare queste,
+      apri il file <code>contenuti/carte.txt</code> e controlla le righe indicate:
+      servono esattamente tre parti separate dalla barra <code>|</code>.
+    </p>
+  </section>
+
+</main>
+
+<script src="flashcard.js"></script>
+</body>
+</html>
