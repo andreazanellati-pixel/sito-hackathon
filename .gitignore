@@ -10,3 +10,6 @@ desktop.ini
 *.tmp
 *.bak
 ~$*
+
+# Impostazioni locali di Claude Code: non servono nel sito pubblicato
+.claude/

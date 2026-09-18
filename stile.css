@@ -35,3 +35,18 @@ h1 {
 p {
   margin: 0 0 1.1rem;
 }
+
+/* Collegamento al gioco di flashcard */
+.collegamento-gioco {
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.collegamento-gioco a {
+  color: var(--colore-accento);
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.collegamento-gioco a:hover { text-decoration: underline; }
