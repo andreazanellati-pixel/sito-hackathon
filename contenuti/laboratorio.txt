@@ -1,0 +1,90 @@
+# ============================================================
+#  CONTENUTI DEL LABORATORIO DI CHIMICA
+#  Questo file viene letto dalla pagina chimica.html
+# ============================================================
+#
+# COME FUNZIONA QUESTO FILE
+# - Ogni blocco comincia con una riga che inizia per ## seguita
+#   dal nome del blocco. NON cambiare i nomi dei blocchi: sono
+#   quelli che il programma va a cercare.
+# - Dentro un blocco puoi scrivere due cose:
+#     * testo normale, per le spiegazioni;
+#     * righe di dati, con le parti separate dalla barra |
+#       (tastiera italiana: AltGr + il tasto \ vicino a invio).
+# - Le righe che iniziano con # sono note per te e vengono ignorate.
+# - I numeri con la virgola si possono scrivere sia 1,42 sia 1.42.
+#
+# COLORI DISPONIBILI (si scrivono in italiano)
+#   trasparente, bianco, ghiaccio, azzurro, blu, verde, giallo,
+#   ambra, arancione, rosso, marrone, beige,
+#   grigiochiaro, grigio, grigioscuro, nero
+
+
+# ============================================================
+#  1. TESTI DI PRESENTAZIONE DEI CINQUE BANCHI
+# ============================================================
+
+## descrizione-stati
+La materia è fatta di particelle che si attraggono quando sono a media distanza e si respingono quando sono troppo vicine. Abbassa la temperatura e vedrai le particelle bloccarsi in un reticolo ordinato; alzala e le vedrai rompere i legami e riempire tutto il recipiente. Il pistone in alto ti permette di comprimere il gas e di leggere come cambia la pressione sulle pareti.
+
+## descrizione-densita
+Tutti gli oggetti di questo banco hanno lo stesso volume: cambia solo la sostanza di cui sono fatti, cioè la loro densità. Un corpo galleggia se è meno denso del liquido in cui è immerso e affonda se è più denso. Prova a prevedere il risultato prima di lasciar cadere l'oggetto.
+
+## descrizione-solubilita
+In una certa quantità d'acqua si può sciogliere solo una certa quantità di soluto: superato quel limite la soluzione è satura e il soluto in più si deposita sul fondo. Il limite dipende dalla sostanza e dalla temperatura, come mostra la curva di solubilità qui accanto.
+
+## descrizione-acidi
+Il pH indica quanto una soluzione è acida o basica su una scala da 0 a 14. L'indicatore universale cambia colore a seconda del pH: rosso negli acidi forti, verde nel neutro, viola nelle basi forti. Scegli una sostanza di uso comune e guarda dove si colloca sulla scala.
+
+## descrizione-reazione
+L'aceto contiene acido acetico: aggiungendo bicarbonato di sodio avviene una reazione che libera anidride carbonica. Con il recipiente chiuso la massa totale non cambia (legge di Lavoisier); con il recipiente aperto il gas se ne va e la bilancia segna di meno. Continua ad aggiungere bicarbonato: a un certo punto l'aceto finisce e la reazione si ferma.
+
+
+# ============================================================
+#  2. LIQUIDI DEL BANCO "DENSITA' E GALLEGGIAMENTO"
+#     nome | densità in g/cm3 | colore
+# ============================================================
+
+## liquidi
+Acqua | 1,00 | azzurro
+Olio d'oliva | 0,92 | giallo
+Alcol | 0,79 | trasparente
+Glicerina | 1,26 | bianco
+Miele | 1,42 | ambra
+
+
+# ============================================================
+#  3. MATERIALI DEGLI OGGETTI DA IMMERGERE
+#     nome | densità in g/cm3 | colore
+# ============================================================
+
+## materiali
+Sughero | 0,24 | beige
+Legno | 0,60 | marrone
+Ghiaccio | 0,92 | ghiaccio
+Plastica | 0,95 | bianco
+Gomma | 1,20 | nero
+Vetro | 2,50 | verde
+Alluminio | 2,70 | grigiochiaro
+Ferro | 7,87 | grigio
+Piombo | 11,34 | grigioscuro
+
+
+# ============================================================
+#  4. SOSTANZE DEL BANCO "ACIDI E BASI"
+#     nome | valore del pH
+# ============================================================
+
+## sostanze-ph
+Acido delle batterie | 0,5
+Succo di limone | 2,0
+Bibita gassata | 2,5
+Aceto | 2,9
+Caffè | 5,0
+Latte | 6,5
+Acqua pura | 7,0
+Acqua di mare | 8,2
+Bicarbonato | 9,0
+Sapone da bucato | 10,0
+Ammoniaca | 11,5
+Candeggina | 13,0

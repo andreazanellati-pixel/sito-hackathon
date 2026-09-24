@@ -1,0 +1,2272 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Laboratorio di chimica</title>
+<style>
+:root {
+  --testo: #1d2430;
+  --testo-tenue: #5a6572;
+  --sfondo: #f7f7f5;
+  --accento: #2c5f8a;
+  --accento-tenue: #e9f1f7;
+  --bordo: #d9dee4;
+  --pannello: #ffffff;
+  --ombra: 0 1px 2px rgba(29,36,48,0.05), 0 8px 20px rgba(29,36,48,0.06);
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 1.5rem 1rem 3.5rem;
+  background: var(--sfondo);
+  color: var(--testo);
+  font-family: Georgia, "Times New Roman", serif;
+  line-height: 1.55;
+}
+
+.contenitore { max-width: 64rem; margin: 0 auto; }
+
+/* ---------- testata ---------- */
+.ritorno {
+  color: var(--accento);
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 0.95rem;
+}
+.ritorno:hover { text-decoration: underline; }
+
+h1 {
+  margin: 0.6rem 0 0.2rem;
+  color: var(--accento);
+  font-size: 1.85rem;
+  letter-spacing: -0.01em;
+}
+
+.sottotitolo { margin: 0 0 1.4rem; color: var(--testo-tenue); font-style: italic; }
+
+/* ---------- barra dei banchi ---------- */
+.banchi-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1.25rem;
+}
+
+.banchi-nav button {
+  font-family: var(--sans);
+  font-size: 0.86rem;
+  font-weight: 600;
+  padding: 0.5rem 0.9rem;
+  border: 1px solid var(--bordo);
+  background: var(--pannello);
+  color: var(--testo-tenue);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.banchi-nav button:hover { border-color: var(--accento); color: var(--accento); }
+.banchi-nav button.attivo {
+  background: var(--accento);
+  border-color: var(--accento);
+  color: #fff;
+}
+
+/* ---------- struttura di un banco ---------- */
+.banco {
+  display: grid;
+  grid-template-columns: 17rem 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+.banco.nascosto { display: none; }
+
+@media (max-width: 56rem) {
+  .banco { grid-template-columns: 1fr; }
+}
+
+.comandi, .scena {
+  background: var(--pannello);
+  border: 1px solid var(--bordo);
+  border-radius: 0.65rem;
+  box-shadow: var(--ombra);
+}
+
+.comandi { padding: 1rem; }
+.scena { padding: 0.7rem; }
+
+.descrizione {
+  margin: 0 0 1rem;
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid var(--bordo);
+  font-size: 0.86rem;
+  color: var(--testo-tenue);
+}
+
+.gruppo { margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--bordo); }
+.gruppo:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+
+.gruppo h2 {
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accento);
+  margin: 0 0 0.5rem;
+}
+
+input[type="range"] { width: 100%; margin: 0.3rem 0 0.15rem; accent-color: var(--accento); }
+
+.valore {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: 0.82rem;
+  color: var(--testo-tenue);
+}
+.valore strong { color: var(--testo); font-size: 0.95rem; }
+
+.scelte { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+
+.scelte button, .azione {
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  padding: 0.35rem 0.6rem;
+  border: 1px solid var(--bordo);
+  background: var(--pannello);
+  color: var(--testo);
+  border-radius: 0.35rem;
+  cursor: pointer;
+}
+.scelte button:hover, .azione:hover { border-color: var(--accento); color: var(--accento); }
+.scelte button.attivo {
+  background: var(--accento);
+  border-color: var(--accento);
+  color: #fff;
+}
+
+.azione { display: block; width: 100%; margin-top: 0.4rem; font-weight: 600; }
+.azione.primaria { background: var(--accento); border-color: var(--accento); color: #fff; }
+.azione.primaria:hover { background: #245075; color: #fff; }
+.azione.attenzione { color: #a5423a; border-color: #e0c3c0; }
+.azione.attenzione:hover { border-color: #a5423a; color: #a5423a; }
+
+.riga { display: flex; align-items: center; gap: 0.5rem; }
+.riga label { font-family: var(--sans); font-size: 0.78rem; color: var(--testo-tenue); }
+.riga input[type="range"] { flex: 1; }
+
+/* ---------- strumenti di lettura ---------- */
+.strumenti {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.4rem;
+  margin-top: 0.2rem;
+}
+.strumento {
+  background: var(--accento-tenue);
+  border-radius: 0.4rem;
+  padding: 0.4rem 0.55rem;
+}
+.strumento .misura {
+  font-family: var(--sans);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--accento);
+  line-height: 1.2;
+}
+.strumento .nome {
+  font-family: var(--sans);
+  font-size: 0.64rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--testo-tenue);
+}
+
+.badge-stato {
+  font-family: var(--sans);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 0.5rem;
+  border-radius: 0.4rem;
+  background: var(--accento-tenue);
+  color: var(--accento);
+}
+
+.esito {
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  min-height: 3.4em;
+  margin: 0.6rem 0 0;
+  color: var(--testo);
+}
+.esito .giusto { color: #2f7d4f; font-weight: 700; }
+.esito .sbagliato { color: #a5423a; font-weight: 700; }
+
+.barra-saturazione {
+  height: 0.55rem;
+  background: var(--accento-tenue);
+  border-radius: 999px;
+  overflow: hidden;
+  margin: 0.4rem 0 0.3rem;
+}
+.barra-saturazione div {
+  height: 100%;
+  width: 0%;
+  background: var(--accento);
+  border-radius: 999px;
+}
+.barra-saturazione.satura div { background: #c2703a; }
+
+.nota {
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  color: var(--testo-tenue);
+  margin: 0.6rem 0 0;
+}
+.nota kbd {
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  border: 1px solid var(--bordo);
+  border-bottom-width: 2px;
+  border-radius: 0.25rem;
+  padding: 0 0.25rem;
+}
+
+.equazione {
+  font-family: var(--sans);
+  font-size: 0.82rem;
+  text-align: center;
+  background: var(--accento-tenue);
+  border-radius: 0.4rem;
+  padding: 0.5rem 0.3rem;
+  margin: 0;
+}
+
+/* ---------- tele ---------- */
+.scena { position: relative; }
+.scena canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 0.45rem;
+  background: linear-gradient(#f4f8fb, #e9eff4);
+  touch-action: none;
+}
+#tela-stati { cursor: crosshair; }
+#tela-densita { cursor: crosshair; }
+#tela-grafico { background: #fcfcfa; margin-top: 0.6rem; }
+
+.legenda {
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  color: var(--testo-tenue);
+  margin: 0.45rem 0 0.15rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+}
+.legenda span::before {
+  content: "";
+  display: inline-block;
+  width: 0.7rem;
+  height: 0.2rem;
+  border-radius: 999px;
+  margin-right: 0.3rem;
+  vertical-align: middle;
+}
+.legenda .cinetica::before { background: #d1451f; }
+.legenda .potenziale::before { background: #2c6f8a; }
+.legenda .totale::before { background: #6a4aa8; }
+
+/* ---------- pannelli del tasto destro ---------- */
+.pannello {
+  position: absolute;
+  z-index: 5;
+  width: 13.5rem;
+  background: var(--pannello);
+  border: 1px solid var(--accento);
+  border-radius: 0.45rem;
+  box-shadow: 0 0.4rem 1.2rem rgba(29,36,48,0.25);
+  padding: 0.65rem 0.75rem;
+}
+.pannello.nascosto { display: none; }
+.pannello h3 {
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accento);
+  margin: 0 0 0.5rem;
+}
+.pannello label {
+  display: block;
+  font-family: var(--sans);
+  font-size: 0.74rem;
+  color: var(--testo-tenue);
+  margin-top: 0.45rem;
+}
+.pannello .bottoni { display: flex; gap: 0.3rem; margin-top: 0.6rem; }
+.pannello .bottoni button { flex: 1; }
+
+/* ---------- avviso di caricamento ---------- */
+.avviso {
+  background: #fdf3e7;
+  border: 1px solid #e6c9a3;
+  border-radius: 0.5rem;
+  padding: 0.7rem 0.9rem;
+  margin-bottom: 1.1rem;
+  font-size: 0.85rem;
+}
+.avviso.nascosto { display: none; }
+</style>
+</head>
+<body>
+
+<div class="contenitore">
+
+  <a class="ritorno" href="index.html">&#8592; Torna alla pagina iniziale</a>
+  <h1>Laboratorio di chimica</h1>
+  <p class="sottotitolo">Cinque banchi di lavoro per il primo biennio: prova, osserva, misura.</p>
+
+  <p class="avviso nascosto" id="avviso-contenuti">
+    Non riesco a leggere <code>contenuti/laboratorio.txt</code>: alcuni banchi
+    resteranno vuoti. Succede quando la pagina viene aperta direttamente dal
+    computer invece che dal sito pubblicato o da un server locale.
+  </p>
+
+  <nav class="banchi-nav" id="barra-banchi">
+    <button type="button" class="attivo" data-banco="stati">Stati della materia</button>
+    <button type="button" data-banco="densita">Densit&agrave; e galleggiamento</button>
+    <button type="button" data-banco="solubilita">Solubilit&agrave;</button>
+    <button type="button" data-banco="acidi">Acidi e basi</button>
+    <button type="button" data-banco="reazione">Reazione chimica</button>
+  </nav>
+
+  <!-- ================= BANCO 1: STATI DELLA MATERIA ================= -->
+  <section class="banco" id="banco-stati">
+    <aside class="comandi">
+      <p class="descrizione" id="descrizione-stati"></p>
+
+      <div class="gruppo">
+        <h2>Stato osservato</h2>
+        <div class="badge-stato" id="stato-materia">&mdash;</div>
+      </div>
+
+      <div class="gruppo">
+        <h2>Temperatura</h2>
+        <input type="range" id="cur-temperatura" min="0" max="1000" step="5" value="420">
+        <p class="valore"><strong id="val-temperatura">260</strong> unit&agrave; arbitrarie &middot; <span id="etichetta-temperatura">tiepido</span></p>
+      </div>
+
+      <div class="gruppo">
+        <h2>Pressione (pistone)</h2>
+        <input type="range" id="cur-pressione" min="0" max="100" step="1" value="25">
+        <p class="valore">il pistone comprime al <strong id="val-pressione">25</strong>%</p>
+      </div>
+
+      <div class="gruppo">
+        <h2>Misure</h2>
+        <div class="strumenti">
+          <div class="strumento">
+            <div class="misura" id="mis-spinta">0</div>
+            <div class="nome">Pressione sulle pareti</div>
+          </div>
+          <div class="strumento">
+            <div class="misura" id="mis-particelle">0</div>
+            <div class="nome">Particelle</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="gruppo">
+        <h2>Scene pronte</h2>
+        <div class="scelte">
+          <button type="button" data-scena="solido">Solido</button>
+          <button type="button" data-scena="liquido">Liquido</button>
+          <button type="button" data-scena="gas">Gas</button>
+        </div>
+        <button type="button" class="azione attenzione" id="bt-svuota-stati">Svuota il recipiente</button>
+      </div>
+
+      <div class="gruppo">
+        <h2>Tempo</h2>
+        <button type="button" class="azione" id="bt-pausa">Pausa</button>
+        <div class="riga" style="margin-top:0.5rem">
+          <label for="cur-rallentatore">Rallentatore</label>
+          <input type="range" id="cur-rallentatore" min="10" max="100" step="5" value="100">
+          <span class="valore"><strong id="val-rallentatore">100%</strong></span>
+        </div>
+      </div>
+
+      <p class="nota">
+        <strong>Clic</strong>: aggiunge una particella. <strong>Clic e trascina</strong>:
+        la lancia. <strong>Tasto destro</strong> su una particella per modificarla,
+        nel vuoto per gli altri parametri.
+      </p>
+    </aside>
+
+    <div class="scena">
+      <canvas id="tela-stati" width="860" height="470"></canvas>
+      <canvas id="tela-grafico" width="860" height="130"></canvas>
+      <p class="legenda">
+        <span class="cinetica">Energia cinetica</span>
+        <span class="potenziale">Energia potenziale</span>
+        <span class="totale">Energia totale</span>
+      </p>
+
+      <div class="pannello nascosto" id="pannello-particella">
+        <h3>Particella scelta</h3>
+        <label>Raggio <input type="range" id="cur-raggio-p" min="5" max="26" step="1"></label>
+        <label>Massa <input type="range" id="cur-massa-p" min="0.5" max="20" step="0.1"></label>
+        <div class="bottoni">
+          <button type="button" class="azione attenzione" id="bt-elimina-p" style="margin:0">Elimina</button>
+          <button type="button" class="azione" id="bt-chiudi-p" style="margin:0">Chiudi</button>
+        </div>
+      </div>
+
+      <div class="pannello nascosto" id="pannello-globale">
+        <h3>Altri parametri</h3>
+        <label>Forza di legame <input type="range" id="cur-legame" min="0" max="20000" step="250"></label>
+        <label>Attrito dell'aria <input type="range" id="cur-attrito" min="0" max="50" step="1"></label>
+        <label>Raggio delle nuove particelle <input type="range" id="cur-raggio-nuove" min="5" max="20" step="1"></label>
+        <label>Rigidit&agrave; delle pareti <input type="range" id="cur-rigidita" min="50" max="100" step="1"></label>
+        <div class="bottoni">
+          <button type="button" class="azione" id="bt-chiudi-g" style="margin:0">Chiudi</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= BANCO 2: DENSITA' ================= -->
+  <section class="banco nascosto" id="banco-densita">
+    <aside class="comandi">
+      <p class="descrizione" id="descrizione-densita"></p>
+
+      <div class="gruppo">
+        <h2>Liquido nella vasca</h2>
+        <div class="scelte" id="lista-liquidi"></div>
+      </div>
+
+      <div class="gruppo">
+        <h2>Materiale dell'oggetto</h2>
+        <div class="scelte" id="lista-materiali"></div>
+      </div>
+
+      <div class="gruppo">
+        <h2>La tua previsione</h2>
+        <div class="scelte">
+          <button type="button" data-previsione="galleggia">Gallegger&agrave;</button>
+          <button type="button" data-previsione="affonda">Affonder&agrave;</button>
+        </div>
+        <p class="esito" id="esito-densita"></p>
+      </div>
+
+      <div class="gruppo">
+        <button type="button" class="azione attenzione" id="bt-svuota-densita">Svuota la vasca</button>
+      </div>
+
+      <p class="nota">Scegli la previsione, poi <strong>clicca nella vasca</strong> per lasciar cadere l'oggetto.</p>
+    </aside>
+
+    <div class="scena">
+      <canvas id="tela-densita" width="860" height="430"></canvas>
+    </div>
+  </section>
+
+  <!-- ================= BANCO 3: SOLUBILITA' ================= -->
+  <section class="banco nascosto" id="banco-solubilita">
+    <aside class="comandi">
+      <p class="descrizione" id="descrizione-solubilita"></p>
+
+      <div class="gruppo">
+        <h2>Soluto</h2>
+        <div class="scelte" id="lista-soluti">
+          <button type="button" class="attivo" data-soluto="sale">Sale</button>
+          <button type="button" data-soluto="zucchero">Zucchero</button>
+        </div>
+        <button type="button" class="azione primaria" id="bt-cucchiaino">Aggiungi un cucchiaino (5 g)</button>
+      </div>
+
+      <div class="gruppo">
+        <h2>Temperatura dell'acqua</h2>
+        <input type="range" id="cur-temp-acqua" min="0" max="100" step="1" value="20">
+        <p class="valore"><strong id="val-temp-acqua">20</strong> &deg;C</p>
+      </div>
+
+      <div class="gruppo">
+        <h2>Nel bicchiere (100 mL)</h2>
+        <div class="barra-saturazione" id="barra-saturazione"><div id="barra-piena"></div></div>
+        <p class="valore" id="testo-saturazione">0,0 g sciolti su 36,6 g possibili</p>
+        <div class="strumenti" style="margin-top:0.5rem">
+          <div class="strumento">
+            <div class="misura" id="mis-sciolto">0,0 g</div>
+            <div class="nome">Sciolto</div>
+          </div>
+          <div class="strumento">
+            <div class="misura" id="mis-fondo">0,0 g</div>
+            <div class="nome">Sul fondo</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="gruppo">
+        <button type="button" class="azione attenzione" id="bt-svuota-bicchiere">Svuota il bicchiere</button>
+      </div>
+
+      <p class="nota" id="nota-saturazione">Aggiungi cucchiaini finch&eacute; la soluzione diventa satura.</p>
+    </aside>
+
+    <div class="scena">
+      <canvas id="tela-solubilita" width="860" height="430"></canvas>
+    </div>
+  </section>
+
+  <!-- ================= BANCO 4: ACIDI E BASI ================= -->
+  <section class="banco nascosto" id="banco-acidi">
+    <aside class="comandi">
+      <p class="descrizione" id="descrizione-acidi"></p>
+
+      <div class="gruppo">
+        <h2>pH della soluzione</h2>
+        <input type="range" id="cur-ph" min="0" max="14" step="0.1" value="7">
+        <p class="valore">pH <strong id="val-ph">7,0</strong> &middot; <span id="etichetta-ph">neutro</span></p>
+        <div class="scelte" style="margin-top:0.4rem">
+          <button type="button" id="bt-goccia-acido">Goccia di acido</button>
+          <button type="button" id="bt-goccia-base">Goccia di base</button>
+        </div>
+      </div>
+
+      <div class="gruppo">
+        <h2>Sostanze di uso comune</h2>
+        <div class="scelte" id="lista-sostanze"></div>
+      </div>
+
+      <p class="nota">
+        Nel banco di scuola lo stesso colore si ottiene con la cartina
+        all'indicatore universale immersa nella soluzione.
+      </p>
+    </aside>
+
+    <div class="scena">
+      <canvas id="tela-acidi" width="860" height="400"></canvas>
+    </div>
+  </section>
+
+  <!-- ================= BANCO 5: REAZIONE CHIMICA ================= -->
+  <section class="banco nascosto" id="banco-reazione">
+    <aside class="comandi">
+      <p class="descrizione" id="descrizione-reazione"></p>
+
+      <p class="equazione">NaHCO<sub>3</sub> + CH<sub>3</sub>COOH &rarr; CH<sub>3</sub>COONa + H<sub>2</sub>O + CO<sub>2</sub>&uarr;</p>
+
+      <div class="gruppo" style="margin-top:1rem">
+        <h2>Esperimento</h2>
+        <button type="button" class="azione primaria" id="bt-bicarbonato">Aggiungi 1 g di bicarbonato</button>
+        <div class="scelte" style="margin-top:0.5rem">
+          <button type="button" class="attivo" data-recipiente="chiuso">Recipiente chiuso</button>
+          <button type="button" data-recipiente="aperto">Recipiente aperto</button>
+        </div>
+      </div>
+
+      <div class="gruppo">
+        <h2>Bilancia e reagenti</h2>
+        <div class="strumenti">
+          <div class="strumento">
+            <div class="misura" id="mis-bilancia">170,0 g</div>
+            <div class="nome">Massa totale</div>
+          </div>
+          <div class="strumento">
+            <div class="misura" id="mis-co2">0,00 g</div>
+            <div class="nome">CO&#8322; prodotta</div>
+          </div>
+          <div class="strumento">
+            <div class="misura" id="mis-bicarbonato">0,0 g</div>
+            <div class="nome">Bicarbonato aggiunto</div>
+          </div>
+          <div class="strumento">
+            <div class="misura" id="mis-acido">2,50 g</div>
+            <div class="nome">Acido ancora disponibile</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="gruppo">
+        <button type="button" class="azione attenzione" id="bt-ricomincia-reazione">Ricomincia l'esperimento</button>
+      </div>
+
+      <p class="esito" id="esito-reazione"></p>
+    </aside>
+
+    <div class="scena">
+      <canvas id="tela-reazione" width="860" height="440"></canvas>
+    </div>
+  </section>
+
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ================================================================
+     UTILITA' DI BASE
+     ================================================================ */
+  function el(id) { return document.getElementById(id); }
+
+  /* I numeri si mostrano con la virgola, come si scrive in italiano. */
+  function num(valore, decimali) {
+    return valore.toFixed(decimali === undefined ? 2 : decimali).replace(".", ",");
+  }
+
+  /* Nel file dei contenuti si puo' scrivere sia 1,42 sia 1.42. */
+  function leggiNumero(testo) {
+    return parseFloat(String(testo).replace(",", "."));
+  }
+
+  var TAVOLOZZA = {
+    trasparente: "#e3eef4", bianco: "#f1f1ec", ghiaccio: "#d5efff",
+    azzurro: "#8cc3e2", blu: "#5b8fc9", verde: "#8cbd84", giallo: "#e2cf6e",
+    ambra: "#d9a23c", arancione: "#df8a46", rosso: "#cb5b4d",
+    marrone: "#8a5a2b", beige: "#d9c9a8", grigiochiaro: "#c8ced4",
+    grigio: "#98a0a8", grigioscuro: "#5f666f", nero: "#33363b"
+  };
+
+  function coloreDaNome(nome) {
+    return TAVOLOZZA[String(nome || "").toLowerCase().trim()] || "#98a0a8";
+  }
+
+  function componenti(hex) {
+    return [
+      parseInt(hex.substr(1, 2), 16),
+      parseInt(hex.substr(3, 2), 16),
+      parseInt(hex.substr(5, 2), 16)
+    ];
+  }
+
+  function conAlfa(hex, alfa) {
+    var c = componenti(hex);
+    return "rgba(" + c[0] + "," + c[1] + "," + c[2] + "," + alfa + ")";
+  }
+
+  function schiarisci(hex, quanto) {
+    var c = componenti(hex);
+    return "rgb(" +
+      Math.round(c[0] + (255 - c[0]) * quanto) + "," +
+      Math.round(c[1] + (255 - c[1]) * quanto) + "," +
+      Math.round(c[2] + (255 - c[2]) * quanto) + ")";
+  }
+
+  /* Posizione del puntatore nelle coordinate interne della tela. */
+  function posizioneSuTela(tela, evento) {
+    var rect = tela.getBoundingClientRect();
+    var p = (evento.touches && evento.touches[0]) ? evento.touches[0] : evento;
+    return {
+      x: (p.clientX - rect.left) * (tela.width / rect.width),
+      y: (p.clientY - rect.top) * (tela.height / rect.height)
+    };
+  }
+
+  function evidenzia(contenitore, bottoneScelto) {
+    var b = contenitore.querySelectorAll("button");
+    for (var i = 0; i < b.length; i++) b[i].classList.toggle("attivo", b[i] === bottoneScelto);
+  }
+
+  /* ================================================================
+     DISEGNO DELLA VETRERIA
+     Funzioni condivise da piu' banchi, cosi' i recipienti hanno
+     tutti lo stesso aspetto.
+     ================================================================ */
+  var VETRO = "rgba(72,104,128,0.55)";
+
+  function percorsoBecher(ctx, x, y, w, h, raggio) {
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x, y + h - raggio);
+    ctx.quadraticCurveTo(x, y + h, x + raggio, y + h);
+    ctx.lineTo(x + w - raggio, y + h);
+    ctx.quadraticCurveTo(x + w, y + h, x + w, y + h - raggio);
+    ctx.lineTo(x + w, y);
+  }
+
+  function riempiLiquido(ctx, x, y, w, h, livelloY, colore, alfa) {
+    if (livelloY >= y + h) return;
+    var g = ctx.createLinearGradient(0, livelloY, 0, y + h);
+    g.addColorStop(0, conAlfa(colore, alfa));
+    g.addColorStop(1, conAlfa(colore, Math.min(1, alfa + 0.25)));
+    ctx.fillStyle = g;
+    ctx.fillRect(x, livelloY, w, y + h - livelloY);
+    ctx.fillStyle = conAlfa(colore, Math.min(1, alfa + 0.35));
+    ctx.fillRect(x, livelloY - 2, w, 3);
+  }
+
+  function disegnaBecher(ctx, x, y, w, h, livelloY, colore, alfa, tacche) {
+    ctx.save();
+    percorsoBecher(ctx, x, y, w, h, 16);
+    ctx.save();
+    ctx.clip();
+    if (livelloY !== null) riempiLiquido(ctx, x, y, w, h, livelloY, colore, alfa);
+    ctx.fillStyle = "rgba(255,255,255,0.32)";
+    ctx.fillRect(x + 11, y + 14, 9, h - 42);
+    ctx.restore();
+
+    percorsoBecher(ctx, x, y, w, h, 16);
+    ctx.strokeStyle = VETRO;
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(x - 7, y);
+    ctx.lineTo(x + w + 7, y);
+    ctx.lineWidth = 4;
+    ctx.stroke();
+
+    if (tacche) {
+      ctx.strokeStyle = "rgba(72,104,128,0.4)";
+      ctx.lineWidth = 1.4;
+      for (var i = 1; i <= 4; i++) {
+        var ty = y + h - (h - 22) * (i / 5);
+        ctx.beginPath();
+        ctx.moveTo(x + w - 22, ty);
+        ctx.lineTo(x + w - 4, ty);
+        ctx.stroke();
+      }
+    }
+    ctx.restore();
+  }
+
+  function disegnaProvetta(ctx, x, y, w, h, livelloY, colore) {
+    var r = w / 2;
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x, y + h - r);
+    ctx.arc(x + r, y + h - r, r, Math.PI, 0, true);
+    ctx.lineTo(x + w, y);
+    ctx.save();
+    ctx.clip();
+    riempiLiquido(ctx, x, y, w, h, livelloY, colore, 0.85);
+    ctx.fillStyle = "rgba(255,255,255,0.3)";
+    ctx.fillRect(x + 8, y + 16, 7, h - 50);
+    ctx.restore();
+    ctx.strokeStyle = VETRO;
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x - 6, y);
+    ctx.lineTo(x + w + 6, y);
+    ctx.lineWidth = 4;
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function disegnaSfera(ctx, x, y, r, coloreBase, coloreChiaro) {
+    var g = ctx.createRadialGradient(x - r * 0.35, y - r * 0.4, r * 0.12, x, y, r);
+    g.addColorStop(0, coloreChiaro);
+    g.addColorStop(1, coloreBase);
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fillStyle = g;
+    ctx.fill();
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = "rgba(0,0,0,0.22)";
+    ctx.stroke();
+  }
+
+  function scriviCentrato(ctx, testo, x, y, font, colore) {
+    ctx.font = font;
+    ctx.fillStyle = colore;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(testo, x, y);
+  }
+
+  var SANS = "system-ui, -apple-system, 'Segoe UI', Arial, sans-serif";
+
+  /* ================================================================
+     LETTURA DEL FILE DEI CONTENUTI
+     ================================================================ */
+  function analizzaContenuti(testo) {
+    var blocchi = {};
+    var corrente = null;
+    var righe = testo.split("\n");
+    for (var i = 0; i < righe.length; i++) {
+      var riga = righe[i].trim();
+      if (riga === "") continue;
+      if (riga.indexOf("##") === 0) {
+        corrente = riga.slice(2).trim().toLowerCase();
+        blocchi[corrente] = { testo: "", dati: [] };
+        continue;
+      }
+      if (riga.charAt(0) === "#" || !corrente) continue;
+      if (riga.indexOf("|") >= 0) {
+        blocchi[corrente].dati.push(riga.split("|").map(function (p) { return p.trim(); }));
+      } else {
+        blocchi[corrente].testo += (blocchi[corrente].testo ? " " : "") + riga;
+      }
+    }
+    return blocchi;
+  }
+
+  function testoBlocco(blocchi, nome) {
+    return (blocchi[nome] && blocchi[nome].testo) || "";
+  }
+
+  function datiBlocco(blocchi, nome) {
+    return (blocchi[nome] && blocchi[nome].dati) || [];
+  }
+
+  /* ================================================================
+     BANCO 1 - STATI DELLA MATERIA
+     Le particelle si attraggono e si respingono secondo il potenziale
+     di Lennard-Jones, cioe' lo stesso schema di forze che tiene unite
+     le molecole reali. La gravita' e' volutamente piccolissima: alla
+     scala delle molecole conta molto meno dell'agitazione termica, ed
+     e' per questo che un gas riempie tutto il recipiente invece di
+     posarsi sul fondo.
+     ================================================================ */
+  function creaBancoStati(blocchi) {
+    var tela = el("tela-stati");
+    var ctx = tela.getContext("2d");
+    var telaGrafico = el("tela-grafico");
+    var ctxG = telaGrafico.getContext("2d");
+
+    var L = tela.width, A = tela.height;
+    var MURO_SX = 42, MURO_DX = L - 42, FONDO = A - 40;
+    var PISTONE_ALTO = 38, CORSA_PISTONE = 250;
+
+    var MAX_PARTICELLE = 140;
+    var K_TERMOSTATO = 10;      // lega la temperatura all'energia cinetica media
+    var TAU_TERMOSTATO = 0.4;   // secondi: rapidita' con cui il termostato agisce
+    var CUTOFF = 2.4;           // oltre 2,4 volte il contatto la forza si ignora
+    var ACCEL_MAX = 14000;      // limite di sicurezza contro le esplosioni numeriche
+    var PASSO_MAX = 1 / 120;
+    var GRAVITA = 20;
+    /* Il colore va dal blu (lente) al rosso (veloci). La scala parte da
+       15 e arriva a 85 perche' e' l'intervallo in cui si muovono davvero
+       le particelle fra solido e gas: cosi' si vede la differenza. */
+    var COLORE_MIN = 15, COLORE_MAX = 85;
+
+    var particelle = [];
+    var stato = {
+      temperatura: 260, pressione: 25, inPausa: false, rallentatore: 1,
+      pistoneY: PISTONE_ALTO, pistoneObiettivo: PISTONE_ALTO,
+      legame: 10000, attrito: 0, raggioNuove: 10, rigidita: 0.85
+    };
+
+    var energiaLegami = 0, spintaAccumulata = 0, secondiAccumulati = 0;
+    var storiaCin = [], storiaPot = [], storiaTot = [], STORIA = 240;
+    /* dopo il caricamento di una scena le particelle si assestano: il
+       grafico aspetta un attimo, altrimenti il picco iniziale
+       schiaccerebbe tutto il resto della curva */
+    var attesaGrafico = 0;
+
+    var statoRilevato = "—";
+    var tempoMisura = 0, riferimenti = [], mobilita = 0, viciniMedi = 0;
+    var mobilitaMisurata = false;
+
+    function crea(x, y, vx, vy, r, m) {
+      if (particelle.length >= MAX_PARTICELLE) return null;
+      var p = { x: x, y: y, vx: vx, vy: vy, r: r, m: m };
+      particelle.push(p);
+      return p;
+    }
+
+    function massaDaRaggio(r) { return Math.max(0.2, r * r * 0.03); }
+
+    function passoFisica(dt) {
+      var n = particelle.length, i, j, p, q;
+      if (n === 0 || dt <= 0) return;
+
+      var ax = new Array(n), ay = new Array(n);
+      for (i = 0; i < n; i++) { ax[i] = 0; ay[i] = GRAVITA; }
+      energiaLegami = 0;
+
+      for (i = 0; i < n; i++) {
+        p = particelle[i];
+        for (j = i + 1; j < n; j++) {
+          q = particelle[j];
+          var dx = q.x - p.x, dy = q.y - p.y;
+          var sigma = p.r + q.r, taglio = sigma * CUTOFF;
+          if (dx > taglio || dx < -taglio || dy > taglio || dy < -taglio) continue;
+          var d2 = dx * dx + dy * dy;
+          if (d2 > taglio * taglio) continue;
+          var d = Math.sqrt(d2) || 0.0001;
+          var dEff = Math.max(d, sigma * 0.5);
+          var sr = sigma / dEff, sr2 = sr * sr, sr6 = sr2 * sr2 * sr2, sr12 = sr6 * sr6;
+          var forza = 24 * stato.legame * (2 * sr12 - sr6) / dEff;
+          energiaLegami += 4 * stato.legame * (sr12 - sr6);
+          var fx = forza * dx / d, fy = forza * dy / d;
+          ax[i] -= fx / p.m; ay[i] -= fy / p.m;
+          ax[j] += fx / q.m; ay[j] += fy / q.m;
+        }
+      }
+
+      /* Le pareti spingono con una forza che cresce avvicinandosi: cosi'
+         una particella appoggiata trova un sostegno stabile invece di
+         rimbalzare all'infinito. La somma di queste spinte e' la
+         pressione che leggiamo sullo strumento. */
+      var epsMuro = 1200 + stato.rigidita * 5000;
+      var INV = 0.8909; // 2 elevato a -1/6: il bordo tocca il muro all'equilibrio
+      var spinta = 0;
+
+      for (i = 0; i < n; i++) {
+        p = particelle[i];
+        var sp = p.r * INV, taglioP = sp * CUTOFF;
+        var muri = [
+          [p.x - MURO_SX, 1, 0],
+          [MURO_DX - p.x, -1, 0],
+          [p.y - stato.pistoneY, 0, 1],
+          [FONDO - p.y, 0, -1]
+        ];
+        for (var k = 0; k < 4; k++) {
+          var dist = muri[k][0];
+          if (dist >= taglioP) continue;
+          var de = Math.max(dist, sp * 0.4);
+          var s6 = Math.pow(sp / de, 6);
+          var f = 24 * epsMuro * s6 * s6 / de;
+          ax[i] += f * muri[k][1] / p.m;
+          ay[i] += f * muri[k][2] / p.m;
+          spinta += f;
+        }
+      }
+      spintaAccumulata += spinta * dt;
+
+      for (i = 0; i < n; i++) {
+        var a = Math.sqrt(ax[i] * ax[i] + ay[i] * ay[i]);
+        if (a > ACCEL_MAX) { var f2 = ACCEL_MAX / a; ax[i] *= f2; ay[i] *= f2; }
+      }
+
+      for (i = 0; i < n; i++) { p = particelle[i]; p.vx += ax[i] * dt; p.vy += ay[i] * dt; }
+
+      /* Termostato: avvicina dolcemente l'energia cinetica media al
+         valore scelto con il cursore della temperatura. */
+      var keTot = 0;
+      for (i = 0; i < n; i++) { p = particelle[i]; keTot += 0.5 * p.m * (p.vx * p.vx + p.vy * p.vy); }
+      var keMedia = keTot / n, keObiettivo = K_TERMOSTATO * stato.temperatura;
+      if (keMedia > 1e-6) {
+        var lambda = Math.sqrt(1 + (dt / TAU_TERMOSTATO) * (keObiettivo / keMedia - 1));
+        lambda = Math.min(1.5, Math.max(0.5, lambda));
+        for (i = 0; i < n; i++) { particelle[i].vx *= lambda; particelle[i].vy *= lambda; }
+      } else if (keObiettivo > 1e-6) {
+        for (i = 0; i < n; i++) {
+          p = particelle[i];
+          var v = Math.sqrt(2 * keObiettivo / p.m) * 0.2, ang = Math.random() * Math.PI * 2;
+          p.vx += Math.cos(ang) * v; p.vy += Math.sin(ang) * v;
+        }
+      }
+
+      if (stato.attrito > 0) {
+        var smorza = Math.max(0, 1 - stato.attrito * dt);
+        for (i = 0; i < n; i++) { particelle[i].vx *= smorza; particelle[i].vy *= smorza; }
+      }
+
+      for (i = 0; i < n; i++) { p = particelle[i]; p.x += p.vx * dt; p.y += p.vy * dt; }
+
+      /* Rete di sicurezza per le particelle lanciate molto veloci. */
+      for (i = 0; i < n; i++) {
+        p = particelle[i];
+        if (p.x - p.r < MURO_SX) { p.x = MURO_SX + p.r; if (p.vx < 0) p.vx = -p.vx * 0.7; }
+        if (p.x + p.r > MURO_DX) { p.x = MURO_DX - p.r; if (p.vx > 0) p.vx = -p.vx * 0.7; }
+        if (p.y - p.r < stato.pistoneY) { p.y = stato.pistoneY + p.r; if (p.vy < 0) p.vy = -p.vy * 0.7; }
+        if (p.y + p.r > FONDO) { p.y = FONDO - p.r; if (p.vy > 0) p.vy = -p.vy * 0.7; }
+      }
+    }
+
+    /* Riconosce lo stato guardando due cose: quante vicine ha in media
+       una particella (coesione) e quanto si sposta rispetto alle vicine
+       nell'ultimo mezzo secondo (mobilita'). In un solido le particelle
+       hanno molte vicine e restano al loro posto; in un liquido hanno
+       molte vicine ma scorrono; in un gas ne hanno pochissime. */
+    function misuraStato() {
+      var n = particelle.length;
+      if (n < 6) {
+        statoRilevato = "—";
+        riferimenti = [];
+        mobilitaMisurata = false;
+        return;
+      }
+
+      var viciniTot = 0, i, j;
+      for (i = 0; i < n; i++) {
+        var p = particelle[i];
+        for (j = i + 1; j < n; j++) {
+          var q = particelle[j];
+          var dx = q.x - p.x, dy = q.y - p.y;
+          var limite = (p.r + q.r) * 1.6;
+          if (dx * dx + dy * dy < limite * limite) viciniTot += 2;
+        }
+      }
+      viciniMedi = viciniTot / n;
+
+      if (riferimenti.length === n) {
+        var spostTot = 0, raggioTot = 0;
+        for (i = 0; i < n; i++) {
+          var dx2 = particelle[i].x - riferimenti[i].x;
+          var dy2 = particelle[i].y - riferimenti[i].y;
+          spostTot += Math.sqrt(dx2 * dx2 + dy2 * dy2);
+          raggioTot += particelle[i].r;
+        }
+        mobilita = (spostTot / n) / (raggioTot / n);
+        mobilitaMisurata = true;
+      }
+      riferimenti = particelle.map(function (p) { return { x: p.x, y: p.y }; });
+
+      /* finche' non si e' misurato quanto si spostano le particelle non
+         si puo' distinguere un solido da un liquido: meglio non dire
+         niente che dire una cosa sbagliata */
+      if (!mobilitaMisurata) { statoRilevato = "—"; return; }
+
+      if (viciniMedi < 2.2) statoRilevato = "gassoso";
+      else if (mobilita < 0.5) statoRilevato = "solido";
+      else statoRilevato = "liquido";
+    }
+
+    function registraEnergia() {
+      var cin = 0, pot = 0;
+      for (var i = 0; i < particelle.length; i++) {
+        var p = particelle[i];
+        cin += 0.5 * p.m * (p.vx * p.vx + p.vy * p.vy);
+        pot += p.m * GRAVITA * (FONDO - p.y);
+      }
+      var tot = cin + pot + energiaLegami;
+      storiaCin.push(cin); storiaPot.push(pot + energiaLegami); storiaTot.push(tot);
+      if (storiaCin.length > STORIA) { storiaCin.shift(); storiaPot.shift(); storiaTot.shift(); }
+    }
+
+    function disegnaGrafico() {
+      var w = telaGrafico.width, h = telaGrafico.height;
+      ctxG.clearRect(0, 0, w, h);
+      if (storiaCin.length < 2) return;
+
+      var tutti = storiaCin.concat(storiaPot, storiaTot);
+      var alto = 1, basso = 0;
+      for (var i = 0; i < tutti.length; i++) {
+        if (tutti[i] > alto) alto = tutti[i];
+        if (tutti[i] < basso) basso = tutti[i];
+      }
+      var m = 12, scala = (h - m * 2) / (alto - basso || 1);
+
+      ctxG.strokeStyle = "rgba(29,36,48,0.07)";
+      ctxG.lineWidth = 1;
+      for (var g = 0; g <= 4; g++) {
+        var y = m + (h - m * 2) * (g / 4);
+        ctxG.beginPath(); ctxG.moveTo(0, y); ctxG.lineTo(w, y); ctxG.stroke();
+      }
+      if (basso < 0) {
+        var yZero = h - m + basso * scala;
+        ctxG.strokeStyle = "rgba(29,36,48,0.28)";
+        ctxG.beginPath(); ctxG.moveTo(0, yZero); ctxG.lineTo(w, yZero); ctxG.stroke();
+      }
+
+      function traccia(serie, colore) {
+        ctxG.strokeStyle = colore; ctxG.lineWidth = 1.8;
+        ctxG.beginPath();
+        var passo = w / (STORIA - 1), off = (STORIA - serie.length) * passo;
+        for (var i = 0; i < serie.length; i++) {
+          var x = off + i * passo, y = h - m - (serie[i] - basso) * scala;
+          if (i === 0) ctxG.moveTo(x, y); else ctxG.lineTo(x, y);
+        }
+        ctxG.stroke();
+      }
+      traccia(storiaPot, "#2c6f8a");
+      traccia(storiaCin, "#d1451f");
+      traccia(storiaTot, "#6a4aa8");
+    }
+
+    function coloreParticella(p) {
+      var v = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
+      var t = Math.min(1, Math.max(0, (v - COLORE_MIN) / (COLORE_MAX - COLORE_MIN)));
+      var tono = Math.round(222 - 222 * t);
+      return ["hsl(" + tono + ",72%,46%)", "hsl(" + tono + ",72%,70%)"];
+    }
+
+    function disegna() {
+      ctx.clearRect(0, 0, L, A);
+
+      /* recipiente */
+      ctx.fillStyle = "rgba(255,255,255,0.55)";
+      ctx.fillRect(MURO_SX, stato.pistoneY, MURO_DX - MURO_SX, FONDO - stato.pistoneY);
+
+      ctx.strokeStyle = "rgba(72,104,128,0.75)";
+      ctx.lineWidth = 5;
+      ctx.beginPath();
+      ctx.moveTo(MURO_SX - 2, PISTONE_ALTO - 8);
+      ctx.lineTo(MURO_SX - 2, FONDO + 2);
+      ctx.lineTo(MURO_DX + 2, FONDO + 2);
+      ctx.lineTo(MURO_DX + 2, PISTONE_ALTO - 8);
+      ctx.stroke();
+
+      /* pistone */
+      var py = stato.pistoneY;
+      ctx.fillStyle = "#9aa4ad";
+      ctx.fillRect(MURO_SX, py - 14, MURO_DX - MURO_SX, 14);
+      ctx.fillStyle = "#7d8791";
+      ctx.fillRect(MURO_SX, py - 4, MURO_DX - MURO_SX, 4);
+      ctx.fillRect(L / 2 - 9, 4, 18, py - 14);
+      ctx.fillStyle = "#6c757e";
+      ctx.fillRect(L / 2 - 34, 0, 68, 10);
+
+      /* particelle */
+      for (var i = 0; i < particelle.length; i++) {
+        var p = particelle[i], c = coloreParticella(p);
+        disegnaSfera(ctx, p.x, p.y, p.r, c[0], c[1]);
+        if (p === particellaScelta) {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r + 5, 0, Math.PI * 2);
+          ctx.setLineDash([3, 3]);
+          ctx.strokeStyle = "#1d2430";
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+          ctx.setLineDash([]);
+        }
+      }
+
+      if (trascino.attivo) {
+        ctx.save();
+        ctx.setLineDash([6, 5]);
+        ctx.strokeStyle = "#a5423a";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(trascino.x0, trascino.y0);
+        ctx.lineTo(trascino.x1, trascino.y1);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      disegnaGrafico();
+    }
+
+    /* ---- interazione col mouse e col tocco ---- */
+    var trascino = { attivo: false, x0: 0, y0: 0, x1: 0, y1: 0 };
+    var particellaScelta = null;
+    var pannelloP = el("pannello-particella"), pannelloG = el("pannello-globale");
+    var scena = tela.parentNode;
+
+    function nascondiPannelli() {
+      pannelloP.classList.add("nascosto");
+      pannelloG.classList.add("nascosto");
+      particellaScelta = null;
+    }
+
+    function apriPannello(pannello, cx, cy) {
+      var r = scena.getBoundingClientRect();
+      pannello.classList.remove("nascosto");
+      var x = Math.min(Math.max(0, cx - r.left), Math.max(0, r.width - 230));
+      var y = Math.min(Math.max(0, cy - r.top), Math.max(0, r.height - 240));
+      pannello.style.left = x + "px";
+      pannello.style.top = y + "px";
+    }
+
+    function inizioTrascino(evento) {
+      if (evento.button !== undefined && evento.button !== 0) return;
+      nascondiPannelli();
+      var pos = posizioneSuTela(tela, evento);
+      trascino.attivo = true;
+      trascino.x0 = trascino.x1 = pos.x;
+      trascino.y0 = trascino.y1 = pos.y;
+    }
+
+    function muoviTrascino(evento) {
+      if (!trascino.attivo) return;
+      var pos = posizioneSuTela(tela, evento);
+      trascino.x1 = pos.x; trascino.y1 = pos.y;
+      evento.preventDefault();
+    }
+
+    function fineTrascino() {
+      if (!trascino.attivo) return;
+      trascino.attivo = false;
+      var dx = trascino.x1 - trascino.x0, dy = trascino.y1 - trascino.y0;
+      var vx = 0, vy = 0;
+      if (Math.sqrt(dx * dx + dy * dy) > 6) {
+        vx = dx * 3.5; vy = dy * 3.5;
+        var v = Math.sqrt(vx * vx + vy * vy);
+        if (v > 900) { vx *= 900 / v; vy *= 900 / v; }
+      }
+      var r = stato.raggioNuove;
+      var x = Math.min(Math.max(trascino.x0, MURO_SX + r + 1), MURO_DX - r - 1);
+      var y = Math.min(Math.max(trascino.y0, stato.pistoneY + r + 1), FONDO - r - 1);
+      crea(x, y, vx, vy, r, massaDaRaggio(r));
+    }
+
+    tela.addEventListener("mousedown", inizioTrascino);
+    window.addEventListener("mousemove", muoviTrascino);
+    window.addEventListener("mouseup", fineTrascino);
+    tela.addEventListener("touchstart", function (e) { inizioTrascino(e); e.preventDefault(); }, { passive: false });
+    tela.addEventListener("touchmove", muoviTrascino, { passive: false });
+    tela.addEventListener("touchend", fineTrascino);
+
+    tela.addEventListener("contextmenu", function (evento) {
+      evento.preventDefault();
+      var pos = posizioneSuTela(tela, evento);
+      var trovata = null;
+      for (var i = particelle.length - 1; i >= 0; i--) {
+        var p = particelle[i];
+        var dx = p.x - pos.x, dy = p.y - pos.y;
+        if (Math.sqrt(dx * dx + dy * dy) <= p.r + 4) { trovata = p; break; }
+      }
+      if (trovata) {
+        particellaScelta = trovata;
+        el("cur-raggio-p").value = trovata.r;
+        el("cur-massa-p").value = trovata.m.toFixed(1);
+        pannelloG.classList.add("nascosto");
+        apriPannello(pannelloP, evento.clientX, evento.clientY);
+      } else {
+        pannelloP.classList.add("nascosto");
+        particellaScelta = null;
+        apriPannello(pannelloG, evento.clientX, evento.clientY);
+      }
+    });
+
+    document.addEventListener("click", function (evento) {
+      if (pannelloP.contains(evento.target) || pannelloG.contains(evento.target)) return;
+      if (evento.target === tela) return;
+      nascondiPannelli();
+    });
+
+    el("cur-raggio-p").addEventListener("input", function () {
+      if (particellaScelta) particellaScelta.r = Number(this.value);
+    });
+    el("cur-massa-p").addEventListener("input", function () {
+      if (particellaScelta) particellaScelta.m = Number(this.value);
+    });
+    el("bt-elimina-p").addEventListener("click", function () {
+      var i = particelle.indexOf(particellaScelta);
+      if (i >= 0) particelle.splice(i, 1);
+      nascondiPannelli();
+    });
+    el("bt-chiudi-p").addEventListener("click", nascondiPannelli);
+    el("bt-chiudi-g").addEventListener("click", nascondiPannelli);
+
+    var curLegame = el("cur-legame"), curAttrito = el("cur-attrito");
+    var curRaggioNuove = el("cur-raggio-nuove"), curRigidita = el("cur-rigidita");
+    curLegame.value = stato.legame;
+    curAttrito.value = stato.attrito * 100;
+    curRaggioNuove.value = stato.raggioNuove;
+    curRigidita.value = Math.round(stato.rigidita * 100);
+    curLegame.addEventListener("input", function () { stato.legame = Number(this.value); });
+    curAttrito.addEventListener("input", function () { stato.attrito = Number(this.value) / 100; });
+    curRaggioNuove.addEventListener("input", function () { stato.raggioNuove = Number(this.value); });
+    curRigidita.addEventListener("input", function () { stato.rigidita = Number(this.value) / 100; });
+
+    /* ---- comandi principali ---- */
+    var curTemp = el("cur-temperatura"), curPres = el("cur-pressione");
+
+    function aggiornaTemperatura() {
+      stato.temperatura = Number(curTemp.value);
+      el("val-temperatura").textContent = stato.temperatura;
+      var t = "molto freddo";
+      if (stato.temperatura > 650) t = "molto caldo";
+      else if (stato.temperatura > 380) t = "caldo";
+      else if (stato.temperatura > 150) t = "tiepido";
+      else if (stato.temperatura > 60) t = "freddo";
+      el("etichetta-temperatura").textContent = t;
+    }
+    curTemp.addEventListener("input", aggiornaTemperatura);
+    aggiornaTemperatura();
+
+    function aggiornaPressione() {
+      stato.pressione = Number(curPres.value);
+      el("val-pressione").textContent = stato.pressione;
+    }
+    curPres.addEventListener("input", aggiornaPressione);
+    aggiornaPressione();
+
+    var btPausa = el("bt-pausa");
+    btPausa.addEventListener("click", function () {
+      stato.inPausa = !stato.inPausa;
+      btPausa.textContent = stato.inPausa ? "Riprendi" : "Pausa";
+      btPausa.classList.toggle("primaria", stato.inPausa);
+    });
+
+    el("cur-rallentatore").addEventListener("input", function () {
+      stato.rallentatore = Number(this.value) / 100;
+      el("val-rallentatore").textContent = this.value + "%";
+    });
+
+    el("bt-svuota-stati").addEventListener("click", function () {
+      particelle.length = 0;
+      riferimenti = [];
+      mobilitaMisurata = false;
+      nascondiPannelli();
+    });
+
+    function impostaCursore(cursore, valore, funzione) {
+      cursore.value = valore;
+      funzione();
+    }
+
+    function caricaScena(nome) {
+      particelle.length = 0;
+      riferimenti = [];
+      mobilitaMisurata = false;
+      statoRilevato = "—";
+      nascondiPannelli();
+      storiaCin.length = 0; storiaPot.length = 0; storiaTot.length = 0;
+
+      if (nome === "solido") {
+        impostaCursore(curTemp, 100, aggiornaTemperatura);
+        impostaCursore(curPres, 55, aggiornaPressione);
+      } else if (nome === "liquido") {
+        impostaCursore(curTemp, 420, aggiornaTemperatura);
+        impostaCursore(curPres, 30, aggiornaPressione);
+      } else {
+        impostaCursore(curTemp, 850, aggiornaTemperatura);
+        impostaCursore(curPres, 5, aggiornaPressione);
+      }
+
+      /* il pistone va subito al posto giusto, cosi' le particelle non
+         si trovano schiacciate da una parete che si muove dopo */
+      stato.pistoneY = stato.pistoneObiettivo = PISTONE_ALTO + (stato.pressione / 100) * CORSA_PISTONE;
+
+      /* Le particelle partono sempre da posizioni ordinate e ben
+         distanziate: se nascessero sovrapposte si respingerebbero con
+         una violenza che non c'entra nulla con l'esperimento. */
+      var r, colonne, righe, passo, x0, y0, f, c;
+      if (nome === "solido") {
+        r = 11; colonne = 10; righe = 4; passo = r * 2.3;
+        x0 = (MURO_SX + MURO_DX) / 2 - (colonne - 1) * passo / 2;
+        y0 = FONDO - r - 3 - (righe - 1) * passo;
+        for (f = 0; f < righe; f++) {
+          for (c = 0; c < colonne; c++) {
+            crea(x0 + c * passo + (f % 2) * passo * 0.5, y0 + f * passo, 0, 0, r, massaDaRaggio(r));
+          }
+        }
+      } else if (nome === "liquido") {
+        /* un po' di disordine iniziale: un liquido non parte mai
+           ordinato come un cristallo */
+        r = 10; colonne = 11; righe = 5; passo = r * 2.4;
+        x0 = (MURO_SX + MURO_DX) / 2 - (colonne - 1) * passo / 2;
+        y0 = FONDO - r - 6 - (righe - 1) * passo;
+        for (f = 0; f < righe; f++) {
+          for (c = 0; c < colonne; c++) {
+            crea(x0 + c * passo + (f % 2) * passo * 0.5 + (Math.random() - 0.5) * passo * 0.3,
+              y0 + f * passo + (Math.random() - 0.5) * passo * 0.3,
+              (Math.random() - 0.5) * 80, (Math.random() - 0.5) * 80, r, massaDaRaggio(r));
+          }
+        }
+      } else {
+        r = 8; colonne = 10; righe = 6;
+        var passoX = (MURO_DX - MURO_SX - 40) / colonne;
+        var passoY = (FONDO - stato.pistoneY - 40) / righe;
+        for (f = 0; f < righe; f++) {
+          for (c = 0; c < colonne; c++) {
+            var ang = Math.random() * Math.PI * 2, v = 60 + Math.random() * 90;
+            crea(MURO_SX + 20 + (c + 0.5) * passoX, stato.pistoneY + 20 + (f + 0.5) * passoY,
+              Math.cos(ang) * v, Math.sin(ang) * v, r, massaDaRaggio(r));
+          }
+        }
+      }
+
+      attesaGrafico = 1.2;
+    }
+
+    var bottoniScena = document.querySelectorAll("[data-scena]");
+    for (var b = 0; b < bottoniScena.length; b++) {
+      bottoniScena[b].addEventListener("click", function () {
+        caricaScena(this.getAttribute("data-scena"));
+      });
+    }
+
+    el("descrizione-stati").textContent = testoBlocco(blocchi, "descrizione-stati");
+    caricaScena("liquido");
+
+    return {
+      aggiorna: function (dt) {
+        stato.pistoneObiettivo = PISTONE_ALTO + (stato.pressione / 100) * CORSA_PISTONE;
+        stato.pistoneY += (stato.pistoneObiettivo - stato.pistoneY) * Math.min(1, dt * 3);
+
+        if (!stato.inPausa) {
+          var dtSim = dt * stato.rallentatore;
+          var passi = Math.max(1, Math.ceil(dtSim / PASSO_MAX));
+          for (var s = 0; s < passi; s++) passoFisica(dtSim / passi);
+
+          if (attesaGrafico > 0) attesaGrafico -= dtSim;
+          else registraEnergia();
+
+          tempoMisura += dtSim;
+          if (tempoMisura >= 0.5) { misuraStato(); tempoMisura = 0; }
+
+          /* La pressione e' la forza media che le particelle esercitano
+             su ogni tratto di parete. Si misura sul tempo simulato, non
+             su quello reale, cosi' il rallentatore non falsa la lettura. */
+          secondiAccumulati += dtSim;
+          if (secondiAccumulati >= 1) {
+            var perimetro = 2 * ((MURO_DX - MURO_SX) + (FONDO - stato.pistoneY));
+            el("mis-spinta").textContent = Math.round(spintaAccumulata / secondiAccumulati / perimetro * 100);
+            spintaAccumulata = 0;
+            secondiAccumulati = 0;
+          }
+        }
+
+        el("mis-particelle").textContent = particelle.length;
+        el("stato-materia").textContent = statoRilevato;
+      },
+      disegna: disegna
+    };
+  }
+
+  /* ================================================================
+     BANCO 2 - DENSITA' E GALLEGGIAMENTO
+     Tutti gli oggetti hanno lo stesso volume: cambia solo la densita'.
+     La spinta di Archimede e' proporzionale alla parte immersa, quindi
+     un corpo si ferma quando la frazione immersa uguaglia il rapporto
+     fra la sua densita' e quella del liquido.
+     ================================================================ */
+  function creaBancoDensita(blocchi) {
+    var tela = el("tela-densita");
+    var ctx = tela.getContext("2d");
+    var L = tela.width, A = tela.height;
+
+    var VASCA_SX = 100, VASCA_DX = 650, VASCA_ALTO = 40, VASCA_FONDO = A - 30;
+    var SUPERFICIE = 150;
+    var RAGGIO = 19, G = 700, ATTRITO = 2.2;
+
+    var liquidi = datiBlocco(blocchi, "liquidi").map(function (r) {
+      return { nome: r[0], densita: leggiNumero(r[1]), colore: coloreDaNome(r[2]) };
+    });
+    var materiali = datiBlocco(blocchi, "materiali").map(function (r) {
+      return { nome: r[0], densita: leggiNumero(r[1]), colore: coloreDaNome(r[2]) };
+    });
+
+    var liquido = liquidi[0] || null;
+    var materiale = materiali.length > 1 ? materiali[1] : (materiali[0] || null);
+    var previsione = null;
+    var oggetti = [];
+
+    var contLiquidi = el("lista-liquidi"), contMateriali = el("lista-materiali");
+
+    liquidi.forEach(function (liq) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.textContent = liq.nome + " · " + num(liq.densita, 2);
+      if (liq === liquido) b.classList.add("attivo");
+      b.addEventListener("click", function () { liquido = liq; evidenzia(contLiquidi, b); });
+      contLiquidi.appendChild(b);
+    });
+
+    materiali.forEach(function (mat) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.textContent = mat.nome + " · " + num(mat.densita, 2);
+      if (mat === materiale) b.classList.add("attivo");
+      b.addEventListener("click", function () { materiale = mat; evidenzia(contMateriali, b); });
+      contMateriali.appendChild(b);
+    });
+
+    var bottoniPrevisione = document.querySelectorAll("[data-previsione]");
+    for (var i = 0; i < bottoniPrevisione.length; i++) {
+      bottoniPrevisione[i].addEventListener("click", function () {
+        previsione = this.getAttribute("data-previsione");
+        evidenzia(this.parentNode, this);
+      });
+    }
+
+    el("bt-svuota-densita").addEventListener("click", function () {
+      oggetti.length = 0;
+      el("esito-densita").innerHTML = "";
+    });
+
+    tela.addEventListener("click", function (evento) {
+      if (!liquido || !materiale) return;
+      var pos = posizioneSuTela(tela, evento);
+      var x = Math.min(Math.max(pos.x, VASCA_SX + RAGGIO + 4), VASCA_DX - RAGGIO - 4);
+      oggetti.push({ x: x, y: VASCA_ALTO + RAGGIO + 4, vy: 0, materiale: materiale });
+
+      var galleggia = materiale.densita < liquido.densita;
+      var frazione = Math.min(1, materiale.densita / liquido.densita);
+      var testo = "";
+      if (previsione) {
+        var indovinato = (previsione === "galleggia") === galleggia;
+        testo += indovinato
+          ? "<span class='giusto'>Previsione giusta.</span> "
+          : "<span class='sbagliato'>Previsione sbagliata.</span> ";
+      }
+      testo += materiale.nome + " (" + num(materiale.densita, 2) + " g/cm³) in " +
+        liquido.nome.toLowerCase() + " (" + num(liquido.densita, 2) + " g/cm³): ";
+      testo += galleggia
+        ? "galleggia con il " + Math.round(frazione * 100) + "% del volume immerso."
+        : "affonda, perché è più denso del liquido.";
+      el("esito-densita").innerHTML = testo;
+    });
+
+    function aggiorna(dt) {
+      if (!liquido) return;
+      var i, j;
+      for (i = 0; i < oggetti.length; i++) {
+        var o = oggetti[i];
+        var immerso = 0;
+        if (o.y + RAGGIO > SUPERFICIE) {
+          immerso = Math.min(1, (o.y + RAGGIO - SUPERFICIE) / (2 * RAGGIO));
+        }
+        var gEff = G * (1 - (liquido.densita / o.materiale.densita) * immerso);
+        o.vy += gEff * dt;
+        if (immerso > 0) o.vy *= Math.max(0, 1 - ATTRITO * dt);
+        o.y += o.vy * dt;
+        if (o.y + RAGGIO > VASCA_FONDO) { o.y = VASCA_FONDO - RAGGIO; if (o.vy > 0) o.vy = 0; }
+        if (o.y - RAGGIO < VASCA_ALTO) { o.y = VASCA_ALTO + RAGGIO; if (o.vy < 0) o.vy = 0; }
+      }
+
+      /* gli oggetti non si compenetrano: si scostano di lato */
+      for (i = 0; i < oggetti.length; i++) {
+        for (j = i + 1; j < oggetti.length; j++) {
+          var a = oggetti[i], b = oggetti[j];
+          var dx = b.x - a.x, dy = b.y - a.y;
+          var d = Math.sqrt(dx * dx + dy * dy) || 0.01;
+          var sovrapposizione = 2 * RAGGIO - d;
+          if (sovrapposizione > 0) {
+            var nx = dx / d, ny = dy / d, spinta = sovrapposizione * 0.5;
+            a.x -= nx * spinta; a.y -= ny * spinta * 0.35;
+            b.x += nx * spinta; b.y += ny * spinta * 0.35;
+          }
+        }
+        var o2 = oggetti[i];
+        o2.x = Math.min(Math.max(o2.x, VASCA_SX + RAGGIO + 2), VASCA_DX - RAGGIO - 2);
+        o2.y = Math.min(Math.max(o2.y, VASCA_ALTO + RAGGIO), VASCA_FONDO - RAGGIO);
+      }
+    }
+
+    function disegna() {
+      ctx.clearRect(0, 0, L, A);
+      if (!liquido) {
+        scriviCentrato(ctx, "Dati non disponibili", L / 2, A / 2, "16px " + SANS, "#5a6572");
+        return;
+      }
+
+      var w = VASCA_DX - VASCA_SX, h = VASCA_FONDO - VASCA_ALTO;
+      disegnaBecher(ctx, VASCA_SX, VASCA_ALTO, w, h, SUPERFICIE, liquido.colore, 0.5, true);
+
+      for (var i = 0; i < oggetti.length; i++) {
+        var o = oggetti[i];
+        disegnaSfera(ctx, o.x, o.y, RAGGIO, o.materiale.colore, schiarisci(o.materiale.colore, 0.45));
+        var c = componenti(o.materiale.colore);
+        var chiaro = (c[0] * 299 + c[1] * 587 + c[2] * 114) / 1000 > 150;
+        scriviCentrato(ctx, num(o.materiale.densita, 2), o.x, o.y,
+          "bold 11px " + SANS, chiaro ? "rgba(29,36,48,0.8)" : "rgba(255,255,255,0.92)");
+      }
+
+      /* colonna di destra: liquido nella vasca e materiale scelto */
+      ctx.textAlign = "left";
+      ctx.textBaseline = "middle";
+      var cx = VASCA_DX + 30;
+
+      ctx.font = "11px " + SANS;
+      ctx.fillStyle = "#6b7684";
+      ctx.fillText("NELLA VASCA", cx, 62);
+      ctx.fillStyle = conAlfa(liquido.colore, 0.75);
+      ctx.fillRect(cx, 74, 30, 30);
+      ctx.strokeStyle = VETRO;
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(cx, 74, 30, 30);
+      ctx.font = "13px " + SANS;
+      ctx.fillStyle = "#3f4c5a";
+      ctx.fillText(liquido.nome, cx + 40, 82);
+      ctx.fillText(num(liquido.densita, 2) + " g/cm³", cx + 40, 99);
+
+      if (materiale) {
+        ctx.font = "11px " + SANS;
+        ctx.fillStyle = "#6b7684";
+        ctx.fillText("OGGETTO SCELTO", cx, 146);
+        disegnaSfera(ctx, cx + 16, 174, 16, materiale.colore, schiarisci(materiale.colore, 0.45));
+        ctx.font = "13px " + SANS;
+        ctx.fillStyle = "#3f4c5a";
+        ctx.fillText(materiale.nome, cx + 40, 166);
+        ctx.fillText(num(materiale.densita, 2) + " g/cm³", cx + 40, 183);
+
+        ctx.font = "12px " + SANS;
+        ctx.fillStyle = materiale.densita < liquido.densita ? "#2f7d4f" : "#a5423a";
+        ctx.fillText(materiale.densita < liquido.densita ? "meno denso del liquido" : "più denso del liquido", cx, 218);
+      }
+    }
+
+    el("descrizione-densita").textContent = testoBlocco(blocchi, "descrizione-densita");
+
+    return { aggiorna: aggiorna, disegna: disegna };
+  }
+
+  /* ================================================================
+     BANCO 3 - SOLUBILITA'
+     Il limite di solubilita' cambia pochissimo con la temperatura per
+     il sale e moltissimo per lo zucchero: e' proprio questo il
+     confronto che mostra la curva accanto al bicchiere.
+     ================================================================ */
+  function creaBancoSolubilita(blocchi) {
+    var tela = el("tela-solubilita");
+    var ctx = tela.getContext("2d");
+    var L = tela.width, A = tela.height;
+
+    var BX = 80, BY = 70, BW = 220, BH = 300;
+    var LIVELLO = BY + 60;
+    var CUCCHIAINO = 5;
+
+    var SOLUTI = {
+      sale: { nome: "sale", colore: "#f4f4ef", limite: function (t) { return 36 + 0.03 * t; } },
+      zucchero: { nome: "zucchero", colore: "#fff6e2", limite: function (t) { return 180 + 3 * t; } }
+    };
+
+    var soluto = "sale";
+    var temperatura = 20;
+    var sciolto = { sale: 0, zucchero: 0 };
+    var fondo = { sale: 0, zucchero: 0 };
+    var granuli = [];
+
+    function limite(nome) { return SOLUTI[nome].limite(temperatura); }
+    function totaleFondo() { return fondo.sale + fondo.zucchero; }
+    function altezzaDeposito() { return Math.min(120, totaleFondo() * 1.2); }
+
+    /* Scaldando, il deposito puo' tornare a sciogliersi; raffreddando,
+       il soluto in eccesso ricristallizza sul fondo. */
+    function riequilibra() {
+      ["sale", "zucchero"].forEach(function (s) {
+        var lim = limite(s);
+        if (sciolto[s] > lim) {
+          fondo[s] += sciolto[s] - lim;
+          sciolto[s] = lim;
+        } else if (fondo[s] > 0) {
+          var recupero = Math.min(fondo[s], lim - sciolto[s]);
+          sciolto[s] += recupero;
+          fondo[s] -= recupero;
+        }
+      });
+    }
+
+    function aggiornaLetture() {
+      var lim = limite(soluto);
+      var quota = sciolto[soluto];
+      el("mis-sciolto").textContent = num(quota, 1) + " g";
+      el("mis-fondo").textContent = num(totaleFondo(), 1) + " g";
+      el("testo-saturazione").textContent =
+        num(quota, 1) + " g di " + SOLUTI[soluto].nome + " sciolti su " + num(lim, 1) + " g possibili";
+      var percentuale = Math.min(100, (quota / lim) * 100);
+      el("barra-piena").style.width = percentuale + "%";
+      var satura = percentuale > 99.5;
+      el("barra-saturazione").classList.toggle("satura", satura);
+      el("nota-saturazione").textContent = satura
+        ? "Soluzione satura: il " + SOLUTI[soluto].nome + " in più si deposita sul fondo. Prova ad alzare la temperatura."
+        : "Aggiungi cucchiaini finché la soluzione diventa satura.";
+    }
+
+    function aggiungiCucchiaino() {
+      var lim = limite(soluto);
+      var spazio = Math.max(0, lim - sciolto[soluto]);
+      var siScioglie = Math.min(CUCCHIAINO, spazio);
+      sciolto[soluto] += siScioglie;
+      fondo[soluto] += CUCCHIAINO - siScioglie;
+      for (var i = 0; i < 6; i++) {
+        granuli.push({
+          x: BX + BW / 2 + (Math.random() - 0.5) * 70,
+          y: BY - 10 - Math.random() * 20,
+          vy: 20 + Math.random() * 40,
+          colore: SOLUTI[soluto].colore,
+          esito: siScioglie >= CUCCHIAINO ? "scioglie" : "deposita",
+          vita: 0
+        });
+      }
+      aggiornaLetture();
+    }
+
+    el("bt-cucchiaino").addEventListener("click", aggiungiCucchiaino);
+
+    var contSoluti = el("lista-soluti");
+    var bottoniSoluto = contSoluti.querySelectorAll("button");
+    for (var i = 0; i < bottoniSoluto.length; i++) {
+      bottoniSoluto[i].addEventListener("click", function () {
+        soluto = this.getAttribute("data-soluto");
+        evidenzia(contSoluti, this);
+        aggiornaLetture();
+      });
+    }
+
+    el("cur-temp-acqua").addEventListener("input", function () {
+      temperatura = Number(this.value);
+      el("val-temp-acqua").textContent = temperatura;
+      riequilibra();
+      aggiornaLetture();
+    });
+
+    el("bt-svuota-bicchiere").addEventListener("click", function () {
+      sciolto.sale = 0; sciolto.zucchero = 0;
+      fondo.sale = 0; fondo.zucchero = 0;
+      granuli.length = 0;
+      aggiornaLetture();
+    });
+
+    function aggiorna(dt) {
+      var yDeposito = BY + BH - altezzaDeposito();
+      for (var i = granuli.length - 1; i >= 0; i--) {
+        var g = granuli[i];
+        g.vy += 260 * dt;
+        g.y += g.vy * dt;
+        g.vita += dt;
+        if (g.esito === "scioglie") {
+          if (g.vita > 1.1) granuli.splice(i, 1);
+        } else if (g.y >= yDeposito - 3) {
+          granuli.splice(i, 1);
+        }
+      }
+    }
+
+    /* Il deposito e' disegnato sempre con gli stessi granelli: le
+       posizioni nascono da una formula, non dal caso, cosi' non
+       tremolano a ogni fotogramma. */
+    function disegnaDeposito(altezza) {
+      if (altezza <= 0) return;
+      var base = BY + BH;
+      ctx.save();
+      percorsoBecher(ctx, BX, BY, BW, BH, 16);
+      ctx.clip();
+      ctx.fillStyle = "#ece2cb";
+      ctx.fillRect(BX + 2, base - altezza, BW - 4, altezza);
+      ctx.fillStyle = "rgba(255,255,255,0.55)";
+      for (var i = 0; i < 90; i++) {
+        var px = BX + 8 + ((i * 53) % (BW - 16));
+        var py = base - ((i * 29) % Math.max(1, Math.round(altezza)));
+        ctx.beginPath();
+        ctx.arc(px, py, 1.9, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+
+    function disegnaCurva() {
+      var gx = 400, gy = 70, gw = 400, gh = 280;
+      var maxY = 500;
+
+      ctx.fillStyle = "#fdfdfb";
+      ctx.fillRect(gx, gy, gw, gh);
+      ctx.strokeStyle = "rgba(29,36,48,0.18)";
+      ctx.lineWidth = 1;
+      ctx.strokeRect(gx, gy, gw, gh);
+
+      ctx.strokeStyle = "rgba(29,36,48,0.08)";
+      ctx.fillStyle = "#6b7684";
+      ctx.font = "11px " + SANS;
+      ctx.textAlign = "right";
+      ctx.textBaseline = "middle";
+      for (var v = 0; v <= maxY; v += 100) {
+        var y = gy + gh - (v / maxY) * gh;
+        ctx.beginPath(); ctx.moveTo(gx, y); ctx.lineTo(gx + gw, y); ctx.stroke();
+        ctx.fillText(String(v), gx - 6, y);
+      }
+      ctx.textAlign = "center";
+      ctx.textBaseline = "top";
+      for (var t = 0; t <= 100; t += 20) {
+        var x = gx + (t / 100) * gw;
+        ctx.beginPath(); ctx.moveTo(x, gy); ctx.lineTo(x, gy + gh); ctx.stroke();
+        ctx.fillText(t + "°", x, gy + gh + 6);
+      }
+
+      ctx.fillStyle = "#3f4c5a";
+      ctx.font = "13px " + SANS;
+      ctx.fillText("Curva di solubilità (g in 100 mL d'acqua)", gx + gw / 2, gy - 22);
+      ctx.font = "11px " + SANS;
+      ctx.fillStyle = "#6b7684";
+      ctx.fillText("temperatura dell'acqua", gx + gw / 2, gy + gh + 22);
+
+      function curva(nome, colore) {
+        ctx.strokeStyle = colore;
+        ctx.lineWidth = 2.4;
+        ctx.beginPath();
+        for (var t = 0; t <= 100; t += 2) {
+          var val = SOLUTI[nome].limite(t);
+          var x = gx + (t / 100) * gw;
+          var y = gy + gh - Math.min(1, val / maxY) * gh;
+          if (t === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+
+        var vx = gx + (temperatura / 100) * gw;
+        var vy = gy + gh - Math.min(1, SOLUTI[nome].limite(temperatura) / maxY) * gh;
+        ctx.beginPath();
+        ctx.arc(vx, vy, nome === soluto ? 6 : 4, 0, Math.PI * 2);
+        ctx.fillStyle = colore;
+        ctx.fill();
+        if (nome === soluto) {
+          ctx.strokeStyle = "#fff";
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        }
+      }
+
+      ctx.save();
+      ctx.setLineDash([4, 4]);
+      ctx.strokeStyle = "rgba(44,95,138,0.5)";
+      ctx.lineWidth = 1.4;
+      var tx = gx + (temperatura / 100) * gw;
+      ctx.beginPath(); ctx.moveTo(tx, gy); ctx.lineTo(tx, gy + gh); ctx.stroke();
+      ctx.restore();
+
+      curva("zucchero", "#d9a23c");
+      curva("sale", "#2c6f8a");
+
+      ctx.textAlign = "left";
+      ctx.font = "12px " + SANS;
+      ctx.fillStyle = "#d9a23c";
+      ctx.fillText("zucchero", gx + 12, gy + 14);
+      ctx.fillStyle = "#2c6f8a";
+      ctx.fillText("sale", gx + 12, gy + gh - 34);
+    }
+
+    function disegna() {
+      ctx.clearRect(0, 0, L, A);
+
+      /* la soluzione si scurisce un po' man mano che si concentra */
+      var concentrazione = Math.min(1, sciolto[soluto] / limite(soluto));
+      disegnaBecher(ctx, BX, BY, BW, BH, LIVELLO, "#8cc3e2", 0.35 + concentrazione * 0.2, true);
+      disegnaDeposito(altezzaDeposito());
+
+      ctx.save();
+      percorsoBecher(ctx, BX, BY, BW, BH, 16);
+      ctx.clip();
+      for (var i = 0; i < granuli.length; i++) {
+        var g = granuli[i];
+        ctx.globalAlpha = g.esito === "scioglie" ? Math.max(0, 1 - g.vita / 1.1) : 1;
+        ctx.beginPath();
+        ctx.arc(g.x, g.y, 3.2, 0, Math.PI * 2);
+        ctx.fillStyle = g.colore;
+        ctx.fill();
+        ctx.globalAlpha = 1;
+      }
+      ctx.restore();
+
+      ctx.textAlign = "center";
+      ctx.textBaseline = "alphabetic";
+      ctx.font = "13px " + SANS;
+      ctx.fillStyle = "#3f4c5a";
+      ctx.fillText("100 mL d'acqua a " + temperatura + " °C", BX + BW / 2, BY + BH + 26);
+
+      disegnaCurva();
+    }
+
+    el("descrizione-solubilita").textContent = testoBlocco(blocchi, "descrizione-solubilita");
+    aggiornaLetture();
+
+    return { aggiorna: aggiorna, disegna: disegna };
+  }
+
+  /* ================================================================
+     BANCO 4 - ACIDI E BASI
+     ================================================================ */
+  function creaBancoAcidi(blocchi) {
+    var tela = el("tela-acidi");
+    var ctx = tela.getContext("2d");
+    var L = tela.width, A = tela.height;
+
+    var TAPPE = [
+      { ph: 0, h: 0, s: 80, l: 45 },
+      { ph: 3, h: 18, s: 85, l: 50 },
+      { ph: 5, h: 45, s: 85, l: 52 },
+      { ph: 7, h: 120, s: 52, l: 42 },
+      { ph: 9, h: 185, s: 52, l: 42 },
+      { ph: 11, h: 230, s: 55, l: 47 },
+      { ph: 14, h: 282, s: 55, l: 44 }
+    ];
+
+    function coloreDaPH(ph) {
+      for (var i = 0; i < TAPPE.length - 1; i++) {
+        var a = TAPPE[i], b = TAPPE[i + 1];
+        if (ph >= a.ph && ph <= b.ph) {
+          var t = (ph - a.ph) / (b.ph - a.ph);
+          return "hsl(" + Math.round(a.h + (b.h - a.h) * t) + "," +
+            Math.round(a.s + (b.s - a.s) * t) + "%," +
+            Math.round(a.l + (b.l - a.l) * t) + "%)";
+        }
+      }
+      return "hsl(0,0%,55%)";
+    }
+
+    function categoria(ph) {
+      if (ph < 3) return "fortemente acido";
+      if (ph < 6) return "acido";
+      if (ph <= 8) return "neutro";
+      if (ph <= 11) return "basico";
+      return "fortemente basico";
+    }
+
+    var sostanze = datiBlocco(blocchi, "sostanze-ph").map(function (r) {
+      return { nome: r[0], ph: leggiNumero(r[1]) };
+    });
+
+    var ph = 7, nomeSostanza = "";
+    var curPH = el("cur-ph");
+
+    function aggiornaLetture() {
+      el("val-ph").textContent = num(ph, 1);
+      el("etichetta-ph").textContent = categoria(ph);
+    }
+
+    function impostaPH(valore, nome) {
+      ph = Math.min(14, Math.max(0, valore));
+      nomeSostanza = nome || "";
+      curPH.value = ph;
+      aggiornaLetture();
+    }
+
+    curPH.addEventListener("input", function () {
+      ph = Number(this.value);
+      nomeSostanza = "";
+      aggiornaLetture();
+    });
+
+    el("bt-goccia-acido").addEventListener("click", function () { impostaPH(ph - 1, ""); });
+    el("bt-goccia-base").addEventListener("click", function () { impostaPH(ph + 1, ""); });
+
+    var contSostanze = el("lista-sostanze");
+    sostanze.forEach(function (s) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.textContent = s.nome;
+      b.addEventListener("click", function () {
+        impostaPH(s.ph, s.nome);
+        evidenzia(contSostanze, b);
+      });
+      contSostanze.appendChild(b);
+    });
+
+    function disegna() {
+      ctx.clearRect(0, 0, L, A);
+      var colore = coloreDaPH(ph);
+
+      /* becher con la soluzione colorata dall'indicatore */
+      disegnaBecher(ctx, 110, 70, 170, 250, 130, "#ffffff", 0, true);
+      ctx.save();
+      percorsoBecher(ctx, 110, 70, 170, 250, 16);
+      ctx.clip();
+      ctx.fillStyle = colore;
+      ctx.fillRect(110, 130, 170, 250 - 60);
+      ctx.fillStyle = "rgba(255,255,255,0.3)";
+      ctx.fillRect(121, 84, 9, 208);
+      ctx.restore();
+      percorsoBecher(ctx, 110, 70, 170, 250, 16);
+      ctx.strokeStyle = VETRO;
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+
+      ctx.textAlign = "center";
+      ctx.textBaseline = "alphabetic";
+      ctx.fillStyle = "#3f4c5a";
+      ctx.font = "13px " + SANS;
+      ctx.fillText(nomeSostanza || "soluzione con indicatore universale", 195, 348);
+
+      /* scala del pH */
+      var sx = 340, sw = 470, sy = 150, sh = 46;
+      for (var i = 0; i < 140; i++) {
+        ctx.fillStyle = coloreDaPH((i / 139) * 14);
+        ctx.fillRect(sx + (i / 140) * sw, sy, sw / 140 + 1, sh);
+      }
+      ctx.strokeStyle = "rgba(29,36,48,0.35)";
+      ctx.lineWidth = 1.2;
+      ctx.strokeRect(sx, sy, sw, sh);
+
+      ctx.fillStyle = "#3f4c5a";
+      ctx.font = "11px " + SANS;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "top";
+      for (var v = 0; v <= 14; v++) {
+        var x = sx + (v / 14) * sw;
+        ctx.beginPath();
+        ctx.moveTo(x, sy + sh);
+        ctx.lineTo(x, sy + sh + 5);
+        ctx.strokeStyle = "rgba(29,36,48,0.35)";
+        ctx.stroke();
+        ctx.fillText(String(v), x, sy + sh + 8);
+      }
+
+      ctx.font = "12px " + SANS;
+      ctx.fillStyle = "#6b7684";
+      ctx.fillText("ACIDO", sx + sw * 0.18, sy - 26);
+      ctx.fillText("NEUTRO", sx + sw * 0.5, sy - 26);
+      ctx.fillText("BASICO", sx + sw * 0.82, sy - 26);
+
+      /* indicatore della posizione */
+      var px = sx + (ph / 14) * sw;
+      ctx.fillStyle = "#1d2430";
+      ctx.beginPath();
+      ctx.moveTo(px, sy - 6);
+      ctx.lineTo(px - 7, sy - 16);
+      ctx.lineTo(px + 7, sy - 16);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.font = "bold 30px " + SANS;
+      ctx.fillStyle = colore;
+      ctx.fillText("pH " + num(ph, 1), sx + sw / 2, sy + sh + 66);
+      ctx.font = "14px " + SANS;
+      ctx.fillStyle = "#3f4c5a";
+      ctx.fillText(categoria(ph), sx + sw / 2, sy + sh + 94);
+    }
+
+    el("descrizione-acidi").textContent = testoBlocco(blocchi, "descrizione-acidi");
+    aggiornaLetture();
+
+    return { disegna: disegna };
+  }
+
+  /* ================================================================
+     BANCO 5 - REAZIONE CHIMICA
+     Bicarbonato di sodio e acido acetico dell'aceto producono anidride
+     carbonica. I rapporti fra le masse sono quelli veri, ricavati dalle
+     masse molari: 84 g di bicarbonato reagiscono con 60 g di acido
+     acetico e liberano 44 g di anidride carbonica.
+     ================================================================ */
+  function creaBancoReazione(blocchi) {
+    var tela = el("tela-reazione");
+    var ctx = tela.getContext("2d");
+    var L = tela.width, A = tela.height;
+
+    var MASSA_BEUTA = 120;       // grammi di vetro
+    var MASSA_ACETO = 50;        // grammi di aceto
+    var ACIDO_INIZIALE = 2.5;    // grammi di acido acetico (aceto al 5%)
+    var ACIDO_PER_BICARB = 60 / 84;
+    var CO2_PER_BICARB = 44 / 84;
+    var VELOCITA_REAZIONE = 0.8; // grammi di bicarbonato al secondo
+
+    var aggiunto = 0, reagito = 0, chiuso = true, bolle = [];
+
+    function acidoRimasto() { return ACIDO_INIZIALE - reagito * ACIDO_PER_BICARB; }
+    function co2() { return reagito * CO2_PER_BICARB; }
+    function nonReagito() { return aggiunto - reagito; }
+    function massaBilancia() {
+      return MASSA_BEUTA + MASSA_ACETO + aggiunto - (chiuso ? 0 : co2());
+    }
+
+    function aggiornaLetture() {
+      el("mis-bilancia").textContent = num(massaBilancia(), 1) + " g";
+      el("mis-co2").textContent = num(co2(), 2) + " g";
+      el("mis-bicarbonato").textContent = num(aggiunto, 1) + " g";
+      el("mis-acido").textContent = num(Math.max(0, acidoRimasto()), 2) + " g";
+
+      var testo = "";
+      if (acidoRimasto() < 0.001 && aggiunto > 0) {
+        testo = "<span class='sbagliato'>L'acido è finito.</span> " +
+          "Il bicarbonato in più (" + num(nonReagito(), 1) + " g) resta sul fondo senza reagire: " +
+          "l'acido acetico era il reagente limitante.";
+      } else if (aggiunto === 0) {
+        testo = "Aggiungi il bicarbonato e osserva la bilancia.";
+      } else if (chiuso) {
+        testo = "<span class='giusto'>Recipiente chiuso:</span> il gas resta dentro e la massa totale non cambia mai, " +
+          "qualunque cosa succeda nella reazione.";
+      } else {
+        testo = "<span class='sbagliato'>Recipiente aperto:</span> " + num(co2(), 2) +
+          " g di anidride carbonica sono usciti nell'aria, e la bilancia segna di meno.";
+      }
+      el("esito-reazione").innerHTML = testo;
+    }
+
+    el("bt-bicarbonato").addEventListener("click", function () {
+      aggiunto += 1;
+      aggiornaLetture();
+    });
+
+    var bottoniRecipiente = document.querySelectorAll("[data-recipiente]");
+    for (var i = 0; i < bottoniRecipiente.length; i++) {
+      bottoniRecipiente[i].addEventListener("click", function () {
+        chiuso = this.getAttribute("data-recipiente") === "chiuso";
+        evidenzia(this.parentNode, this);
+        aggiornaLetture();
+      });
+    }
+
+    el("bt-ricomincia-reazione").addEventListener("click", function () {
+      aggiunto = 0; reagito = 0; bolle.length = 0;
+      aggiornaLetture();
+    });
+
+    function aggiorna(dt) {
+      var disponibile = Math.min(nonReagito(), acidoRimasto() / ACIDO_PER_BICARB);
+      if (disponibile > 0.0001) {
+        var quota = Math.min(disponibile, VELOCITA_REAZIONE * dt);
+        reagito += quota;
+        aggiornaLetture();
+        if (Math.random() < dt * 40) {
+          bolle.push({
+            x: L / 2 - 60 + Math.random() * 120,
+            y: 330 + Math.random() * 20,
+            r: 2 + Math.random() * 4,
+            v: 30 + Math.random() * 50
+          });
+        }
+      }
+      for (var i = bolle.length - 1; i >= 0; i--) {
+        bolle[i].y -= bolle[i].v * dt;
+        if (bolle[i].y < 268) bolle.splice(i, 1);
+      }
+    }
+
+    function percorsoBeuta(cx, collo, spalla, base) {
+      ctx.beginPath();
+      ctx.moveTo(cx - 26, collo);
+      ctx.lineTo(cx - 26, spalla);
+      ctx.lineTo(cx - 105, base - 14);
+      ctx.quadraticCurveTo(cx - 105, base, cx - 91, base);
+      ctx.lineTo(cx + 91, base);
+      ctx.quadraticCurveTo(cx + 105, base, cx + 105, base - 14);
+      ctx.lineTo(cx + 26, spalla);
+      ctx.lineTo(cx + 26, collo);
+    }
+
+    function disegna() {
+      ctx.clearRect(0, 0, L, A);
+      var cx = L / 2 - 40;
+      var collo = 150, spalla = 250, base = 360;
+      var livello = 268;
+
+      /* palloncino sul collo quando il recipiente e' chiuso */
+      if (chiuso) {
+        var volume = co2() * 0.5568;          // litri, a temperatura ambiente
+        var raggio = 12 + 46 * Math.pow(Math.min(1, volume / 1.05), 1 / 3);
+        ctx.beginPath();
+        ctx.ellipse(cx, collo - 12 - raggio * 0.75, raggio * 0.85, raggio, 0, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(210,90,80,0.45)";
+        ctx.fill();
+        ctx.strokeStyle = "rgba(160,60,55,0.6)";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.fillStyle = "rgba(255,255,255,0.4)";
+        ctx.beginPath();
+        ctx.ellipse(cx - raggio * 0.3, collo - 20 - raggio, raggio * 0.18, raggio * 0.28, -0.4, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = "rgba(160,60,55,0.75)";
+        ctx.fillRect(cx - 8, collo - 16, 16, 10);
+      }
+
+      /* beuta con l'aceto */
+      ctx.save();
+      percorsoBeuta(cx, collo, spalla, base);
+      ctx.save();
+      ctx.clip();
+      var g = ctx.createLinearGradient(0, livello, 0, base);
+      g.addColorStop(0, "rgba(226,207,110,0.55)");
+      g.addColorStop(1, "rgba(226,207,110,0.8)");
+      ctx.fillStyle = g;
+      ctx.fillRect(cx - 110, livello, 220, base - livello);
+      ctx.fillStyle = "rgba(226,207,110,0.95)";
+      ctx.fillRect(cx - 110, livello - 2, 220, 3);
+
+      /* bicarbonato non reagito, sul fondo */
+      var deposito = Math.min(26, nonReagito() * 7);
+      if (deposito > 0.3) {
+        ctx.fillStyle = "#f2f0e6";
+        ctx.fillRect(cx - 88, base - deposito, 176, deposito);
+      }
+
+      for (var i = 0; i < bolle.length; i++) {
+        var b = bolle[i];
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(255,255,255,0.75)";
+        ctx.fill();
+      }
+
+      ctx.fillStyle = "rgba(255,255,255,0.3)";
+      ctx.fillRect(cx - 70, 290, 8, 60);
+      ctx.restore();
+
+      percorsoBeuta(cx, collo, spalla, base);
+      ctx.strokeStyle = VETRO;
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+      ctx.restore();
+
+      /* bilancia */
+      ctx.fillStyle = "#d7dce1";
+      ctx.fillRect(cx - 150, base + 4, 300, 12);
+      ctx.fillStyle = "#c2c8cf";
+      ctx.fillRect(cx - 120, base + 16, 240, 44);
+      ctx.fillStyle = "#2b3138";
+      ctx.fillRect(cx - 78, base + 24, 156, 28);
+      scriviCentrato(ctx, num(massaBilancia(), 1) + " g", cx, base + 38, "bold 19px " + SANS, "#7ee0a0");
+
+      /* legenda dei reagenti */
+      ctx.textAlign = "left";
+      ctx.textBaseline = "middle";
+      ctx.font = "13px " + SANS;
+      ctx.fillStyle = "#3f4c5a";
+      ctx.fillText("Aceto: " + num(MASSA_ACETO, 0) + " g, di cui " + num(ACIDO_INIZIALE, 2) + " g di acido acetico", 615, 150);
+      ctx.fillText("Bicarbonato aggiunto: " + num(aggiunto, 1) + " g", 615, 176);
+      ctx.fillText("Bicarbonato reagito: " + num(reagito, 2) + " g", 615, 202);
+      ctx.fillText("Anidride carbonica: " + num(co2(), 2) + " g", 615, 228);
+      ctx.fillStyle = chiuso ? "#2f7d4f" : "#a5423a";
+      ctx.fillText(chiuso ? "Recipiente chiuso: il gas resta dentro" : "Recipiente aperto: il gas esce", 615, 262);
+    }
+
+    el("descrizione-reazione").textContent = testoBlocco(blocchi, "descrizione-reazione");
+    aggiornaLetture();
+
+    return { aggiorna: aggiorna, disegna: disegna };
+  }
+
+  /* ================================================================
+     NAVIGAZIONE FRA I BANCHI E CICLO DI ANIMAZIONE
+     Viene aggiornato e ridisegnato solo il banco aperto: gli altri
+     restano fermi finche' non li si riapre.
+     ================================================================ */
+  function avviaLaboratorio(blocchi) {
+    var banchi = {
+      stati: creaBancoStati(blocchi),
+      densita: creaBancoDensita(blocchi),
+      solubilita: creaBancoSolubilita(blocchi),
+      acidi: creaBancoAcidi(blocchi),
+      reazione: creaBancoReazione(blocchi)
+    };
+
+    var aperto = "stati";
+    var bottoni = el("barra-banchi").querySelectorAll("button");
+
+    function apriBanco(nome) {
+      aperto = nome;
+      for (var i = 0; i < bottoni.length; i++) {
+        bottoni[i].classList.toggle("attivo", bottoni[i].getAttribute("data-banco") === nome);
+      }
+      for (var n in banchi) {
+        if (Object.prototype.hasOwnProperty.call(banchi, n)) {
+          el("banco-" + n).classList.toggle("nascosto", n !== nome);
+        }
+      }
+      if (banchi[nome].disegna) banchi[nome].disegna();
+    }
+
+    for (var i = 0; i < bottoni.length; i++) {
+      bottoni[i].addEventListener("click", function () {
+        apriBanco(this.getAttribute("data-banco"));
+      });
+    }
+
+    var ultimoTempo = null;
+    function ciclo(tempo) {
+      if (ultimoTempo === null) ultimoTempo = tempo;
+      var dt = (tempo - ultimoTempo) / 1000;
+      ultimoTempo = tempo;
+      if (dt > 0.05) dt = 0.05;
+
+      var banco = banchi[aperto];
+      if (banco) {
+        if (banco.aggiorna) banco.aggiorna(dt);
+        if (banco.disegna) banco.disegna();
+      }
+      requestAnimationFrame(ciclo);
+    }
+    requestAnimationFrame(ciclo);
+  }
+
+  fetch("contenuti/laboratorio.txt")
+    .then(function (risposta) {
+      if (!risposta.ok) throw new Error("file non raggiungibile");
+      return risposta.text();
+    })
+    .then(function (testo) { avviaLaboratorio(analizzaContenuti(testo)); })
+    .catch(function () {
+      el("avviso-contenuti").classList.remove("nascosto");
+      avviaLaboratorio({});
+    });
+
+})();
+</script>
+</body>
+</html>
