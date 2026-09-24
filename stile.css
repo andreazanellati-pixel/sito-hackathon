@@ -36,17 +36,19 @@ p {
   margin: 0 0 1.1rem;
 }
 
-/* Collegamento al gioco di flashcard */
-.collegamento-gioco {
+/* Collegamenti alle altre pagine del sito */
+.collegamenti {
   margin-top: 2.5rem;
   padding-top: 1.5rem;
   border-top: 1px solid rgba(0, 0, 0, 0.12);
 }
 
-.collegamento-gioco a {
+.collegamenti p { margin: 0 0 0.6rem; }
+
+.collegamenti a {
   color: var(--colore-accento);
   font-weight: bold;
   text-decoration: none;
 }
 
-.collegamento-gioco a:hover { text-decoration: underline; }
+.collegamenti a:hover { text-decoration: underline; }
